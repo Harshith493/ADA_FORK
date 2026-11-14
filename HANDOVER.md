@@ -12,9 +12,9 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 ## Current status
 
-- Phase: 2 - baselines.
-- Step: Phase 2 evaluation and write-up complete; awaiting user review.
-- Status: done, awaiting user's Phase 2 review.
+- Phase: 3 - fork detector.
+- Step: Phase 2 concerns audited, all-consecutive-step ACI added and rerun; Phase 3 design choices are recorded and implementation is next.
+- Status: Phase 2 done and approved; Phase 3 in progress.
 
 ## Completed (commit references)
 
@@ -26,17 +26,20 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 2 source review, assumptions, runtime estimate, and no-reuse record: `733e73c`.
 - Phase 2 implementation, tests, metrics, report, plots, and research notes: `0c7255d974dddad3daca7c686b515308d62974a1`.
 - Phase 2 handover update with continuation details: `ea95679626fd77e28a5b7c648e2563e5b09c2930`.
+- Phase 2 audit and consecutive-update ACI variant: `316a20d1585c6a7d46e0702e6a6f2a0199c5c6ae`.
 
 ## Exactly what to do next
 
-1. Review `outputs/phase2/report.md`, `outputs/phase2/coverage_by_regime.png`, and `outputs/phase2/width_vs_coverage.png`.
-2. Review implementation guesses and the label-free BMA distinction in `DECISIONS.md`.
-3. Approve Phase 2 or send corrections. Phase 3 has not started.
+1. Extend WindowMatcher for time features and 180-row self-neighborhood exclusion; add tests for self-match and train-only candidate indices.
+2. Implement seeded 2-means branch features, train-only 5,000-window Chronos cache, and miss-target logistic detector; estimate/pilot CPU time before a full inference pass.
+3. Tune k/model and detector baselines on calibration miss outcomes only; freeze hard-flag threshold from calibration miss frequency.
+4. Score test precision-recall/AUPRC and calm false alarms; run the seeded synthetic check; save Phase 4/5 p(fork) and minority-share cache, report, plots and tests.
+5. Commit Phase 3 implementation/results, then HANDOVER separately. Stop for user review; do not start Phase 4.
 
 ## Decisions
 
 - User decisions: Phase 0 approved; Phase 1 choices 1A, 2A, 3A, 4B, 5A; Phase 2 D1-D7 recorded in [`DECISIONS.md`](DECISIONS.md).
-- Pending: user's review/approval of Phase 2. No Phase 2 design choice is outstanding. See [`DECISIONS.md`](DECISIONS.md).
+- Phase 2 is approved. Phase 3 user decisions are recorded in [`DECISIONS.md`](DECISIONS.md); no additional input is pending. Autonomous choices are listed there.
 
 ## Environment and commands
 
@@ -57,6 +60,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 1 command: `python scripts\run_phase1.py`; cached reruns use the existing forecasts. Cache recompute: `python scripts\run_phase1.py --force`; tests: `python -m unittest discover -s tests -v`.
 - Phase 2 command: `python scripts\run_phase2.py`; tests: `python -m unittest discover -s tests -v`. Add `--force` only to recreate the separate calibration forecast cache; Phase 1 test forecasts are never recomputed.
 - Calibration cache is local at `data/cache/phase2_calib_forecasts.npz`; Phase 1 test cache at `data/cache/phase1_pems_bay_forecasts.npz`. kNN pilot took about 0.01 seconds for 20 queries and projected the full matching pass below one minute. Full cache-hit run completed in about 30 seconds; calibration-forecast creation also stayed within about one minute.
+- Phase 2 all-step ACI rerun: `python scripts\run_phase2.py`. Pilot 30 Chronos batches/2.9s, projection 41.4 minutes; completed and cached selected-origin bounds at `data/cache/phase2_consecutive_aci_sampled_bounds.npz`. No extra packages were installed. No `requirements.txt` is present in this repository.
+- Phase 3 command: `python scripts\run_phase3.py`; use the environment already used for Phase 1/2 and the cached Chronos weights. Add no packages; implement small regression and k-means with NumPy.
 
 ## File map
 
@@ -80,6 +85,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - `src/fork/phase2.py` - ACI update/interval score, pseudo-sample and label-free mixture helpers.
 - `tests/test_phase2.py` - ACI, score, matching, mixture, quantile and context-only boundary tests.
 - `outputs/phase2/` - Phase 2 metrics, report, plots, and tuning sweep tables.
+- `data/cache/phase2_consecutive_aci_sampled_bounds.npz` - sampled-origin bounds after all-valid-step ACI updates; ignored local cache.
+- Phase 3 implementation, config, tests and outputs: not yet created.
 - `data/raw/` - downloaded raw public data (not committed).
 - `outputs/phase0/` - Phase 0 forecast figure.
 - `.cache/huggingface/` - local model cache (not committed).
@@ -117,6 +124,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Eight requested unit tests pass, including a test that the forecaster receives context only.
 - Reference [1] BMA explicitly uses training-estimated probabilities for destination regimes. User approved only a label-free adaptation; it is not exact BMA from [1]. No official code was found or reused.
 - First Phase 2 forecast attempt failed because the runner did not set the project-local Hugging Face cache before loading; fixed by setting `HF_HOME` and offline mode before imports. Keep using the project cache; do not redirect to the nearly full C: cache.
+- Phase 2 approximate-90 ACI gamma 0.001 is the minimum of its calibration grid; the all-valid-step version uses that same selected gamma and has wider bounds. Do not describe it as independently gamma-tuned.
 
 ## Latest results
 
@@ -128,3 +136,4 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 2 60-minute transition coverage (n=782): native approximate90 49.7%; ACI approximate90 50.4%; history sampler 73.9%; label-free BMA+ACI paper-style weight 54.9%; label-free BMA+ACI global weight 72.4%; native80 43.9%; ACI native80 44.9%.
 - Phase 2 calm coverage (n=3,718): native approximate90 87.6%; ACI approximate90 88.3%; history 81.4%; BMA+ACI paper-style 84.7%; BMA+ACI global 89.6%.
 - Detailed Phase 2 outputs: `outputs/phase2/metrics_by_regime.csv`, `headline.csv`, parameter sweep CSVs, `report.md`, `coverage_by_regime.png`, and `width_vs_coverage.png`. All 15 tests pass. History result is 7.1-8.1 points under [1]'s 81-82%; global label-free BMA adaptation is 1.2 points under 73.6% but is not exact/comparable BMA; approximate90 Chronos is 5.2 points under [1]'s 54.9%.
+- Phase 2 audit: history 73.9% 60m transition coverage, sample point MAE uses per-horizon sample medians; training neighbors cannot overlap later blocks. The all-valid-step ACI row reaches 58.2% transition coverage, 91.7% calm coverage, 18.39 mph mean width, 48.65 interval score and 4.45 MAE (n=782 transition, 3,718 calm). Phase 2 tests now total 16 and pass.
