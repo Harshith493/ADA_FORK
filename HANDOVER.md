@@ -13,8 +13,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 ## Current status
 
 - Phase: 3 - fork detector.
-- Step: Phase 2 concerns audited, all-consecutive-step ACI added and rerun; Phase 3 design choices are recorded and implementation is next.
-- Status: Phase 2 done and approved; Phase 3 in progress.
+- Step: Phase 3 detector, scoring, synthetic check, report, plots, and tests complete.
+- Status: Phase 3 done; awaiting user's review. Do not start Phase 4 yet.
 
 ## Completed (commit references)
 
@@ -27,19 +27,19 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 2 implementation, tests, metrics, report, plots, and research notes: `0c7255d974dddad3daca7c686b515308d62974a1`.
 - Phase 2 handover update with continuation details: `ea95679626fd77e28a5b7c648e2563e5b09c2930`.
 - Phase 2 audit and consecutive-update ACI variant: `316a20d1585c6a7d46e0702e6a6f2a0199c5c6ae`.
+- Phase 3 detector implementation, tests, metrics, report, figures, and research notes: `4511e501f7deb03f666d04121ddd41802486c8c1`.
+- Phase 3 handover update: committed separately after the detector implementation.
 
 ## Exactly what to do next
 
-1. Extend WindowMatcher for time features and 180-row self-neighborhood exclusion; add tests for self-match and train-only candidate indices.
-2. Implement seeded 2-means branch features, train-only 5,000-window Chronos cache, and miss-target logistic detector; estimate/pilot CPU time before a full inference pass.
-3. Tune k/model and detector baselines on calibration miss outcomes only; freeze hard-flag threshold from calibration miss frequency.
-4. Score test precision-recall/AUPRC and calm false alarms; run the seeded synthetic check; save Phase 4/5 p(fork) and minority-share cache, report, plots and tests.
-5. Commit Phase 3 implementation/results, then HANDOVER separately. Stop for user review; do not start Phase 4.
+1. Review `outputs/phase3/report.md`, `outputs/phase3/precision_recall.png`, `outputs/phase3/example_neighbor_branches.png`, and `outputs/phase3/synthetic_odds.png`.
+2. Review the Phase 2 audit and Phase 3 autonomous choices/results in `DECISIONS.md`.
+3. Approve Phase 3 or send corrections. Do not start Phase 4 before approval.
 
 ## Decisions
 
 - User decisions: Phase 0 approved; Phase 1 choices 1A, 2A, 3A, 4B, 5A; Phase 2 D1-D7 recorded in [`DECISIONS.md`](DECISIONS.md).
-- Phase 2 is approved. Phase 3 user decisions are recorded in [`DECISIONS.md`](DECISIONS.md); no additional input is pending. Autonomous choices are listed there.
+- Phase 2 is approved. Phase 3 awaits user review. Its user and autonomous choices are recorded in [`DECISIONS.md`](DECISIONS.md); no unresolved method choice remains.
 
 ## Environment and commands
 
@@ -62,6 +62,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Calibration cache is local at `data/cache/phase2_calib_forecasts.npz`; Phase 1 test cache at `data/cache/phase1_pems_bay_forecasts.npz`. kNN pilot took about 0.01 seconds for 20 queries and projected the full matching pass below one minute. Full cache-hit run completed in about 30 seconds; calibration-forecast creation also stayed within about one minute.
 - Phase 2 all-step ACI rerun: `python scripts\run_phase2.py`. Pilot 30 Chronos batches/2.9s, projection 41.4 minutes; completed and cached selected-origin bounds at `data/cache/phase2_consecutive_aci_sampled_bounds.npz`. No extra packages were installed. No `requirements.txt` is present in this repository.
 - Phase 3 command: `python scripts\run_phase3.py`; use the environment already used for Phase 1/2 and the cached Chronos weights. Add no packages; implement small regression and k-means with NumPy.
+- Phase 3 run completed under the two-hour limit. Pilot: 20 matching/k-means queries in 0.08s; projected features 0.9 minutes, 5,000 forecasts estimated 0.3 minutes from measured Phase 2 throughput; combined projection 1.2 minutes. Forecast, feature, and p(fork)/minority caches are local and ignored.
 
 ## File map
 
@@ -85,6 +86,11 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - `src/fork/phase2.py` - ACI update/interval score, pseudo-sample and label-free mixture helpers.
 - `tests/test_phase2.py` - ACI, score, matching, mixture, quantile and context-only boundary tests.
 - `outputs/phase2/` - Phase 2 metrics, report, plots, and tuning sweep tables.
+- `src/fork/phase3.py` - label-free calendar embedding, branch features, baseline scores, NumPy logistic detector, PR metrics, synthetic generator.
+- `scripts/run_phase3.py`, `configs/phase3_pems_bay.json` - one-command Phase 3 pipeline and fixed settings.
+- `tests/test_phase3.py` - no-label dependency, no-self-match, train-only, toy k-means, PR ties, and determinism tests.
+- `outputs/phase3/` - test metrics, calibration sweep, PR curve/table, example neighbor branches, synthetic odds comparison, and report.
+- `data/cache/phase3_train_5000_forecasts.npz`, `phase3_feature_cache.npz`, `phase3_fork_outputs.npz` - ignored local caches; final cache has cal/test p(fork) and minority shares for Phase 4/5.
 - `data/cache/phase2_consecutive_aci_sampled_bounds.npz` - sampled-origin bounds after all-valid-step ACI updates; ignored local cache.
 - Phase 3 implementation, config, tests and outputs: not yet created.
 - `data/raw/` - downloaded raw public data (not committed).
@@ -105,7 +111,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 - PEMS-BAY: present at `data/raw/PEMS-BAY.csv` (85,718,439 bytes, Zenodo record 5146275); Phase 1 used 2017-01-01 through 2017-05-31 inclusive.
 - METR-LA: not downloaded by user request; public at the same Zenodo record, defer until needed.
-- Synthetic generator: not implemented.
+- Synthetic two-regime generator: implemented and scored in Phase 3 (not a separate data file).
+- Phase 3 synthetic two-regime/fork generator is implemented in `src/fork/phase3.py` and evaluated in `outputs/phase3/synthetic_metrics.csv`; standalone reusable data cache is not needed.
 - No manual account/token is needed for the above public files. Caltrans PeMS 2026 requires the user's manual account/download step and remains stretch-only.
 - Data citation/license metadata on the Zenodo record is incomplete; do not redistribute the raw data without checking source terms.
 - Chronos model training overlap with PEMS-BAY/METR-LA is not resolved by the model card. Treat the historic datasets as replication only, not post-cutoff headline evidence.
@@ -125,6 +132,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Reference [1] BMA explicitly uses training-estimated probabilities for destination regimes. User approved only a label-free adaptation; it is not exact BMA from [1]. No official code was found or reused.
 - First Phase 2 forecast attempt failed because the runner did not set the project-local Hugging Face cache before loading; fixed by setting `HF_HOME` and offline mode before imports. Keep using the project cache; do not redirect to the nearly full C: cache.
 - Phase 2 approximate-90 ACI gamma 0.001 is the minimum of its calibration grid; the all-valid-step version uses that same selected gamma and has wider bounds. Do not describe it as independently gamma-tuned.
+- Phase 3 p(fork) test AUPRC (0.430) is below volatility (0.445), activating the kill/pivot signal. It also overpredicts synthetic odds (mean 0.609 vs 0.442; odds-bin MAE 0.310). The target is model miss, so do not claim calibrated latent fork probability.
 
 ## Latest results
 
@@ -137,3 +145,5 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 2 calm coverage (n=3,718): native approximate90 87.6%; ACI approximate90 88.3%; history 81.4%; BMA+ACI paper-style 84.7%; BMA+ACI global 89.6%.
 - Detailed Phase 2 outputs: `outputs/phase2/metrics_by_regime.csv`, `headline.csv`, parameter sweep CSVs, `report.md`, `coverage_by_regime.png`, and `width_vs_coverage.png`. All 15 tests pass. History result is 7.1-8.1 points under [1]'s 81-82%; global label-free BMA adaptation is 1.2 points under 73.6% but is not exact/comparable BMA; approximate90 Chronos is 5.2 points under [1]'s 54.9%.
 - Phase 2 audit: history 73.9% 60m transition coverage, sample point MAE uses per-horizon sample medians; training neighbors cannot overlap later blocks. The all-valid-step ACI row reaches 58.2% transition coverage, 91.7% calm coverage, 18.39 mph mean width, 48.65 interval score and 4.45 MAE (n=782 transition, 3,718 calm). Phase 2 tests now total 16 and pass.
+- Phase 3 test AUPRC: p(fork) 0.4299; volatility 0.4450; recent-drop 0.4527; CUSUM 0.3023. Calm false-alarm rates: 0.123, 0.874, 0.186, 1.000. Selected k=25/L2=0.01, hard threshold 0.168745, test flag rate 18.67%, 15.96% calibration miss fraction.
+- Phase 3 synthetic (600 episodes, 1,200 sensor windows): known mean odds 0.442; mean p 0.609; odds-bin MAE 0.310; Brier 0.239; AP vs realized fork events 0.387. All 25 tests pass. Full detail in `outputs/phase3/report.md`.
