@@ -28,7 +28,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 2 handover update with continuation details: `ea95679626fd77e28a5b7c648e2563e5b09c2930`.
 - Phase 2 audit and consecutive-update ACI variant: `316a20d1585c6a7d46e0702e6a6f2a0199c5c6ae`.
 - Phase 3 detector implementation, tests, metrics, report, figures, and research notes: `4511e501f7deb03f666d04121ddd41802486c8c1`.
-- Phase 3 handover update: committed separately after the detector implementation.
+- Phase 3 handover update with review state and continuation steps: `ec4b17b8b495815e4487074951d56629537e89f0`.
 
 ## Exactly what to do next
 
