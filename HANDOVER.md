@@ -64,6 +64,16 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - `outputs/phase0/` - Phase 0 forecast figure.
 - `.cache/huggingface/` - local model cache (not committed).
 
+## Proposed repository structure (not implemented yet)
+
+- `src/fork/` - FORK components, separated from regime scoring code.
+- `configs/` - fixed experiment settings and seeds.
+- `tests/` - metric, conformal update, and label-isolation checks.
+- `scripts/` - one command per experiment and demo entry points.
+- `data/raw/`, `data/processed/` - source data and cached derivatives, both untracked.
+- `outputs/`, `logs/`, `reports/`, `demo/` - figures/results, run logs, final write-up, and demo assets.
+- Keep project rules and handover at root, plus `docs/` for the one-pager summary and research notes.
+
 ## Data status
 
 - PEMS-BAY: present at `data/raw/PEMS-BAY.csv` (85,718,439 bytes, Zenodo record 5146275). The CSV covers 2017-01-01 through 2017-06-30.
