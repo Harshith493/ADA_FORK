@@ -198,6 +198,72 @@ def main(force=False):
                     for h in (2,5,11):
                         label=label_target_period(y[:h+1],p1['free_flow_mph'],p1['congested_mph'])
                         rows.append({'seed':p1['sensor_seeds'][g],'sensor':s,'origin':int(o),'method':method,'horizon_minutes':(h+1)*5,'regime':label,'actual':y[h],'lower':lo[h],'upper':hi[h],'point':point[h],'score':interval_score(y[h],lo[h],hi[h],.2 if '80%' in method.lower() else .1)})
+
+    # Extra ACI variant: forecast each valid 5-minute test origin so all mature
+    # consecutive outcomes can update one per-sensor state. Reuse the saved
+    # intervals when the origin/sensor selection and gamma match.
+    consecutive_name='ACI approximate nominal 90% (updates every valid step)'
+    consecutive_path=ROOT/'data/cache/phase2_consecutive_aci_sampled_bounds.npz'
+    expected_meta={'format':'phase2-consecutive-aci-v1','gamma':gamma_choice[methods[0]],
+                   'origins':to.tolist(),'sensors':sensors.tolist(),'data_rows':len(frame)}
+    consecutive=None
+    if consecutive_path.exists():
+        with np.load(consecutive_path,allow_pickle=False) as cache:
+            if json.loads(str(cache['metadata'].item()))==expected_meta:
+                consecutive=(cache['lower'],cache['upper'])
+    if consecutive is None:
+        test_origins=_valid_test_origins(frame.timestamp,cal_end,len(frame),p1['context_steps'],12,p1['sampling_interval_minutes'])
+        model=ChronosBoltCPU(p1['model_id'],p1['torch_threads'])
+        sensor_index={name:i for i,name in enumerate(cols)}
+        pilot_count=min(10,len(test_origins))
+        tpilot=time.perf_counter()
+        for group in sensors:
+            si=[sensor_index[name] for name in group]
+            for o in test_origins[:pilot_count]:
+                forecast_contexts(model,vals[o-p1['context_steps']:o,si].T)
+        pilot_seconds=time.perf_counter()-tpilot
+        batch_count=len(sensors)*len(test_origins)
+        estimate=pilot_seconds*batch_count/max(pilot_count*len(sensors),1)
+        print(f'Consecutive-ACI pilot: {pilot_count*len(sensors)} batches in {pilot_seconds:.1f}s; projected full pass {estimate/60:.1f} min.')
+        if estimate>7200:
+            raise RuntimeError('Consecutive ACI projection exceeds two hours; no full pass started.')
+        pos={int(o):i for i,o in enumerate(to)}
+        clo=np.full((3,30,len(to),12),np.nan,np.float32); chi=np.full_like(clo,np.nan)
+        gamma=gamma_choice[methods[0]]
+        for g,group in enumerate(sensors):
+            si=[sensor_index[name] for name in group]
+            alpha=np.full(30,.1,float); pending=[[] for _ in group]
+            for o in test_origins:
+                for sensor_i in range(30):
+                    mature=sorted((ev for ev in pending[sensor_i] if ev[0]<o),key=lambda ev:ev[0])
+                    pending[sensor_i]=[ev for ev in pending[sensor_i] if ev[0]>=o]
+                    for _,miss in mature: alpha[sensor_i]=aci_update(alpha[sensor_i],miss,gamma,.1)
+                q=forecast_contexts(model,vals[o-p1['context_steps']:o,si].T)
+                blo,bhi=approximate_90_bounds(q)
+                scaled_lo=np.empty((30,3)); scaled_hi=np.empty((30,3)); misses=np.empty((30,3),int)
+                for j,h in enumerate((2,5,11)):
+                    lower,upper=widen_bounds(blo[:,h],bhi[:,h],alpha,.1)
+                    y=vals[o+h,si]
+                    scaled_lo[:,j]=lower; scaled_hi[:,j]=upper
+                    misses[:,j]=((y<lower)|(y>upper)).astype(int)
+                    for sensor_i in range(30): pending[sensor_i].append((int(o)+h+1,int(misses[sensor_i,j])))
+                if int(o) in pos:
+                    wi=pos[int(o)]
+                    for j,h in enumerate((2,5,11)):
+                        clo[g,:,wi,h]=scaled_lo[:,j]; chi[g,:,wi,h]=scaled_hi[:,j]
+        if np.isnan(clo[:,:,:, [2,5,11]]).any():
+            raise RuntimeError('A sampled test origin was absent from the consecutive forecast pass.')
+        consecutive_path.parent.mkdir(parents=True,exist_ok=True)
+        np.savez_compressed(consecutive_path,metadata=np.array(json.dumps(expected_meta,sort_keys=True)),lower=clo,upper=chi)
+        consecutive=(clo,chi)
+    clo,chi=consecutive
+    for g in range(3):
+        for si,sensor in enumerate(sensors[g]):
+            for wi,o in enumerate(to):
+                y=ty[g,si,wi]; f=tf[g,si,wi]
+                for h in (2,5,11):
+                    label=label_target_period(y[:h+1],p1['free_flow_mph'],p1['congested_mph'])
+                    rows.append({'seed':p1['sensor_seeds'][g],'sensor':sensor,'origin':int(o),'method':consecutive_name,'horizon_minutes':(h+1)*5,'regime':label,'actual':y[h],'lower':clo[g,si,wi,h],'upper':chi[g,si,wi,h],'point':f[h,2],'score':interval_score(y[h],clo[g,si,wi,h],chi[g,si,wi,h],.1)})
     df=pd.DataFrame(rows); out=ROOT/cfg['output_dir']; out.mkdir(parents=True,exist_ok=True)
     grouped=df.groupby(['method','horizon_minutes','regime'],dropna=False)
     metrics=grouped.apply(lambda x:pd.Series({'n':len(x),'coverage':np.mean((x.actual>=x.lower)&(x.actual<=x.upper)),'mean_width_mph':np.mean(x.upper-x.lower),'interval_score':np.mean(x.score),'point_mae':np.mean(np.abs(x.actual-x.point))}),include_groups=False).reset_index()
@@ -230,7 +296,8 @@ def _write_report(out,summary,gamma_choice,best_k,paper_w,best_w,cache_status,pi
     lines=['# Phase 2: PEMS-BAY baselines','',
       'All methods share Phase 1 cached test forecasts, sensors and chronological test origins. Regime labels are generated only after predictions and used only for scoring. Calibration tuning uses the preceding chronological block; online ACI updates only after outcomes mature before a later forecast origin. PEMS-BAY (2017) may overlap Chronos training data, so this is a historical reproduction.','',
       f'- Calibration forecast cache status: {cache_status}; 50 sampled calibration origins. Test cache reused unchanged.',
-      f'- kNN timing pilot: {pilot_n} exact queries in {elapsed:.3f}s; projected matching {projected:.1f}s. Full run completed in roughly one minute on the host after model load.',
+      f'- kNN timing pilot: {pilot_n} exact queries in {elapsed:.3f}s; projected matching {projected:.1f}s. The initial Phase 2 calibration/matching run completed in about one minute after model load.',
+      '- Consecutive-origin ACI: pilot of 30 Chronos batches took 2.9s; projected full test forecast pass was 41.4 minutes. The pass completed under the two-hour cap; selected-origin bounds are cached in data/cache/phase2_consecutive_aci_sampled_bounds.npz.',
       f'- Calibration selections: k={best_k}, paper-style weight={paper_w:.2f}, global weight={best_w:.2f}. Gamma selections appear in the sweep table.',
       '- Point forecast is the distribution median; ACI changes bounds but not the point forecast. Calm pools free-flow and congested; mean width and interval score pool all regimes at 60 minutes.',
       '- ACI width mapping is an implementation assumption: multiply the symmetric base radius by sqrt(target_alpha/current_alpha), so a smaller online miscoverage level widens the interval. [1] gives no gamma for this experiment.',
@@ -259,7 +326,7 @@ def _write_report(out,summary,gamma_choice,best_k,paper_w,best_w,cache_status,pi
       '', '## Guesses and deviations','',
       '- History sampler: per-sensor train-only z-scored 168-step contexts, exact Euclidean matching, timestamp-contiguous training origins, k in [5, 10, 20, 50], actual next-hour neighbor paths, and empirical 5th/95th percentile interval. [1] describes current-speed conditioning and 100 draws but omits this matching rule, k, and interval construction.',
       '- Paper-style weight: first sensor in seed-42 group, first 10 sampled calibration origins, and mean 60-minute interval score objective. [1] says 10 held-out windows but leaves sensor/window selection and objective unspecified. Global weight pools all calibration sensors/windows.',
-      '- Gamma candidates are [0.001, 0.005, 0.01, 0.02], selected by calibration-only sequential interval score. One alpha state per sensor/method is shared across horizons. Forecasts from one origin share the same state; outcomes update it only when their target timestamps are before a later origin.',
+      '- Gamma candidates are [0.001, 0.005, 0.01, 0.02], selected by calibration-only sequential interval score. The approximate-90 choice 0.001 is the lower edge of that grid. The original ACI row updates only at sampled test origins; the extra ACI row forecasts each valid consecutive 5-minute origin, with a state shared across horizons and only matured outcomes updating it.',
       '- Pseudo-sample interpolation/tail handling and ACI width mapping above are implementation assumptions. Full rows across 15/30/60 minutes, regimes, counts, widths, interval scores and MAE: `metrics_by_regime.csv`. k/weight/gamma sweeps and selected values are adjacent CSVs.',
       '- Plots: `coverage_by_regime.png`, `width_vs_coverage.png`. No official baseline code was found or reused; all baseline logic is implemented locally.']
     (out/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')

@@ -8,6 +8,15 @@ ACI approximate nominal 90%,30,transition,575.000000,0.603478,18.958711,136.8656
 ACI approximate nominal 90%,60,congested,301.000000,0.933555,28.737062,32.260603,4.068850
 ACI approximate nominal 90%,60,free-flow,3417.000000,0.878256,10.546863,13.891574,1.637139
 ACI approximate nominal 90%,60,transition,782.000000,0.503836,22.494853,204.238154,16.873976
+ACI approximate nominal 90% (updates every valid step),15,congested,429.000000,0.969697,21.791604,24.958614,2.668662
+ACI approximate nominal 90% (updates every valid step),15,free-flow,3626.000000,0.932432,7.834120,8.699377,1.125067
+ACI approximate nominal 90% (updates every valid step),15,transition,445.000000,0.730337,21.203906,81.398006,8.154130
+ACI approximate nominal 90% (updates every valid step),30,congested,378.000000,0.994709,29.270775,31.037169,3.351383
+ACI approximate nominal 90% (updates every valid step),30,free-flow,3547.000000,0.916831,9.984095,11.820560,1.350460
+ACI approximate nominal 90% (updates every valid step),30,transition,575.000000,0.659130,25.272362,128.792674,11.998787
+ACI approximate nominal 90% (updates every valid step),60,congested,301.000000,0.990033,40.321926,40.586512,4.068850
+ACI approximate nominal 90% (updates every valid step),60,free-flow,3417.000000,0.910740,13.790294,16.215005,1.637139
+ACI approximate nominal 90% (updates every valid step),60,transition,782.000000,0.581841,30.064387,193.458637,16.873976
 ACI native 80% (P10-P90),15,congested,429.000000,0.909091,12.804113,16.423170,2.668662
 ACI native 80% (P10-P90),15,free-flow,3626.000000,0.844732,4.880536,6.000825,1.125067
 ACI native 80% (P10-P90),15,transition,445.000000,0.606742,13.249528,52.061771,8.154130

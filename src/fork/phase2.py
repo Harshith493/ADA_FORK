@@ -29,7 +29,10 @@ def widen_bounds(lower, upper, alpha, target_alpha):
     center = (np.asarray(lower) + np.asarray(upper))/2
     radius = (np.asarray(upper) - np.asarray(lower))/2
     # A smaller online miscoverage state requests more coverage, so bounds widen.
-    scale = np.sqrt(target_alpha/max(alpha, 1e-4))
+    alpha_value=np.maximum(np.asarray(alpha,dtype=float),1e-4)
+    scale = np.sqrt(target_alpha/alpha_value)
+    if np.ndim(scale) and np.ndim(radius)>np.ndim(scale):
+        scale=scale[...,None]
     return center-radius*scale, center+radius*scale
 
 

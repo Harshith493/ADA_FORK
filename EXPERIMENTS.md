@@ -32,6 +32,15 @@
 
 ## Phase 2: ACI, history sampling, and label-free BMA-style adaptation
 
+### Phase 2 audit and consecutive-update ACI variant
+
+- History futures are drawn only from valid training-block origins whose complete 168-step context and 12-step future lie before the training boundary. Calibration and test origins are later blocks, so those neighbor windows cannot overlap them. Windows within the training pool can overlap one another.
+- Sample-based MAE is computed from the per-horizon median of the selected neighbors' future paths; BMA-style sample MAE uses the median of the 100-path mixed sample. Chronos/ACI point MAE uses q50.
+- Approximate-90 ACI selected gamma 0.001, the minimum of [0.001, 0.005, 0.01, 0.02]. The original sampled-window ACI updated only on the 50 sampled test origins per sensor.
+- Added a separate approximate-90 ACI variant that forecasts every timestamp-contiguous valid test origin and updates from all matured 15/30/60-minute miss events. It is scored on the same sampled origins as every other method. Pilot: 30 batches in 2.9s; projected full pass 41.4 minutes; completed under 2 hours. Cached sampled-origin bounds: data/cache/phase2_consecutive_aci_sampled_bounds.npz.
+- Consecutive-update headline (60m transition): coverage 58.2% (n=782), calm coverage 91.7% (n=3,718), mean width 18.39 mph, interval score 48.65, point MAE 4.45. This improves coverage but widens intervals; it uses the same calibration-selected gamma and is not a new gamma tune.
+- Audit of Phase 2 selections found no use of test outcomes or labels for tuning. Existing DECISIONS.md had no “Autonomous choices” section; the Phase 3 autonomous choices are added below.
+
 - Re-verified reference [1] and [7] from their paper records/full text. No official code for [1] was found; no external code was reused.
 - One-command run: `python scripts\run_phase2.py`; use `--force` only to replace the separate calibration forecast cache. Phase 1 test cache is always reused.
 - Config: `configs/phase2_pems_bay.json`. Calibration cache: `data/cache/phase2_calib_forecasts.npz` (50 origins x 3 x 30 sensors); test cache shape `(3, 30, 50, 12, 5)`.

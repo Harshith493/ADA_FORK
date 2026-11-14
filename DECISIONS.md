@@ -76,3 +76,24 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 - The paper says its BMA gate uses training-only destination-regime labels/categories to estimate `P(speed[t+h] in R | speed[t])`; it does not use the true future test label. FORK's rule excludes even that gate, so our method must be labelled **"our label-free adaptation of BMA, not exact BMA from [1]"**. It uses no regime categories or predicted regime probabilities and replaces a fixed fraction of model pseudo-samples with empirical training-neighbor future paths.
 - Guesses: 168-point globally z-scored recent context; Euclidean distance; exact search among timestamp-contiguous training origins; k grid and calibration interval-score objective; paper-style first sensor from seed-42 group and first 10 sampled calibration windows; both BMA weight objectives use mean 60-minute interval score; q pseudo-samples use inverse-CDF linear interpolation and constant outer tails; ACI converts alpha to radius using the symmetric square-root rule above; calibration/test origins are uniform random samples from valid chronological windows (test origins unchanged from Phase 1).
 - No official baseline code was reused. Full measured results and sweep tables: `outputs/phase2/report.md`, `outputs/phase2/metrics_by_regime.csv`, and the adjacent `*_sweep.csv` files.
+
+### Phase 2 user audit
+
+- History-sampling candidate futures come from the training block only. Candidate origins are timestamp-contiguous and require their full context and next-hour future to end at or before the training boundary. As calibration and test are later chronological blocks, neighbor windows cannot overlap those blocks; overlaps among training candidate windows are allowed.
+- Sample-based point MAE is the MAE of the per-horizon median across neighbor futures. For BMA-style mixtures it is the per-horizon median across 100 mixed paths; Chronos and ACI use q50.
+- Approximate-90 ACI selected gamma 0.001, at the minimum of the tested grid. The original Phase 2 test loop updated only at sampled test origins. An added variant forecasts each valid consecutive five-minute test origin and updates after all matured horizon outcomes. It is evaluated on the same sampled origins. Its 60-minute transition coverage is 58.2%, calm coverage 91.7%, mean width 18.39 mph, interval score 48.65, and MAE 4.45. It uses the calibration-selected gamma without a separate all-step gamma tune.
+- No prior “Autonomous choices” section existed. Review of Phase 2 configs/code found no autonomous tuning that used test outcomes or transition labels; test outcomes were used only for online ACI updates after maturity and for scoring.
+
+## Autonomous choices
+
+### Phase 3 approved implementation choices
+
+- Use cyclical time-of-day and day-of-week features encoded as sine/cosine pairs from each window origin; normalize sensor readings with training-block sensor mean/std only.
+- Reuse WindowMatcher, adding optional calendar features and an explicit exclusion radius. During detector training, exclude candidate origins within 180 five-minute rows (15 hours) of the query origin. Candidate contexts and futures must still lie wholly in the training block.
+- Sweep k in [25, 50, 100]; choose k and logistic L2 strength on calibration by log loss for the approximate-90 Chronos miss target only. Do not use transition/regime labels for detector training or tuning.
+- Use deterministic 2-means on train-standardized 12-step neighbor futures. Bimodality separation is Euclidean centroid distance divided by pooled within-cluster RMS spread; minority share is min(cluster sizes)/k, retained as the Phase 4 branch weight.
+- Implement the small logistic regression and 2-means in NumPy to avoid new dependencies. Standardize detector features using training statistics. The supervised target is approximate-90 Chronos miss, not a transition label; call its output p(fork) and evaluate it against transition labels only after all choices are frozen.
+- Tune volatility, recent-drop, and negative CUSUM thresholds on calibration using the Chronos-miss target; use fixed CUSUM reference 0.5 training standard deviations. Evaluate PR/AUPRC against 60-minute transition labels on test only.
+- Set the hard-flag threshold to the calibration p(fork) quantile that yields the calibration Chronos-miss fraction; freeze it before test and report test flag rate.
+- Generate synthetic independent 14-hour contexts with two speed regimes, observable fork-odds levels, configurable jump magnitude and branch coupling. Fit/use the PEMS-trained detector without exposing synthetic fork outcomes; compare predicted p(fork) to generator-known odds as a scoring check only.
+- No code, tuning decision, or feature may inspect test transition labels. Test transition labels are passed only to final scoring and plotting functions.

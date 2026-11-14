@@ -19,6 +19,12 @@ class Phase2MetricTests(unittest.TestCase):
         self.assertAlmostEqual(aci_update(.1,0,.01,.1),.101)
         self.assertAlmostEqual(aci_update(.1,1,.01,.1),.091)
 
+    def test_aci_widens_after_misses(self):
+        from fork.phase2 import widen_bounds
+        lo,hi=widen_bounds(np.array([0.,0.]),np.array([2.,2.]),np.array([.1,.05]),.1)
+        self.assertAlmostEqual(hi[0]-lo[0],2.)
+        self.assertGreater(hi[1]-lo[1],2.)
+
     def test_history_interval_uses_empirical_quantiles(self):
         paths=np.arange(100,dtype=float)[:,None]
         lo,hi=empirical_interval(paths)
