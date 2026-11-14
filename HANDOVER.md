@@ -13,26 +13,27 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 ## Current status
 
 - Phase: 0 - setup and data access.
-- Step: verify public sources, establish a runnable CPU forecast, and propose the repo/environment/data plan.
-- Status: done; Phase 1 is waiting on the user's design choices below.
+- Step: Phase 0 review approved; timing recorded; present Phase 1 choices.
+- Status: done; do not start Phase 1 until the user selects the pending choices in `DECISIONS.md`.
 
 ## Completed (commit references)
 
 - Project one-pager and initial handover: `0111ceb64dd664f9a79291f74da6267977594e75`.
 - Phase 0 notes, forecast script, and plot: `3984bbe` (PEMS-BAY CSV and model cache remain local and untracked).
+- Phase 0 approval, measured timing, and Phase 1 decision menu: commit recorded in this handover update.
 
 ## Exactly what to do next
 
-1. Wait for the user's choices on transition labels, replication sampling, and the post-cutoff headline constraint.
+1. Wait for the user's choices on the five Phase 1 items in `DECISIONS.md`.
 2. Record those choices and rationale in `DECISIONS.md`.
 3. Reconcile the PEMS-BAY CSV's observed date span (through 2017-06-30) against the paper's stated Jan-May period before fixing the reproduction subset.
-4. At the start of Phase 1, build a reproducible chronological dataset/split and baseline forecast pipeline; do not add FORK logic yet.
+4. Only after the choices, build the Phase 1 chronological data/split and native Chronos-Bolt reproduction pipeline; do not add FORK logic yet.
 5. After Phase 1, save metrics and plots, update this file, explain the findings, ask three learning questions, and wait for approval.
 
 ## Decisions
 
-- User decisions: none yet; see [`DECISIONS.md`](DECISIONS.md).
-- Pending: transition definition; reproduction split/window/sensor sampling; how to handle the post-cutoff-only headline requirement; proposed Python environment; approval to proceed to Phase 1.
+- User decisions: Phase 0 approved with no additional notes; see [`DECISIONS.md`](DECISIONS.md).
+- Pending: transition definition; sensor/window subsampling; context/horizon; 90% interval method; chronological split; see options in `DECISIONS.md`.
 
 ## Environment and commands
 
@@ -48,6 +49,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 - Chronos weights are cached under `.cache/huggingface` on the project drive because the C: user cache had only 44.7 MB free. The cache is excluded from Git.
 - Phase 0 one-forecast command: `python scripts\phase0_forecast.py` (run from repo root; internet needed only on first model load).
+- Timing: 10 repeats after one warm-up; median 0.3125 process CPU seconds and 0.0857 wall seconds per forecast with model loaded. Process CPU time can exceed wall time when inference uses multiple threads.
+- Paper-sample estimate: 3 seeded subsets x 30 sensors x 50 windows = 4,500 12-step forecasts; about 23.4 aggregate CPU-minutes and 6.4 serial wall-minutes for inference, with 10-20 minutes estimated end-to-end including loading, data handling, caching, and scoring. Assumes one 12-step forecast supplies horizons 3/6/12; other choices change this estimate.
 - Phase 1 and later commands: not defined yet; create one command per experiment after approval and record each here and in `EXPERIMENTS.md`.
 
 ## File map
@@ -77,7 +80,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 ## Data status
 
 - PEMS-BAY: present at `data/raw/PEMS-BAY.csv` (85,718,439 bytes, Zenodo record 5146275). The CSV covers 2017-01-01 through 2017-06-30.
-- METR-LA: not downloaded; public at the same Zenodo record (72.8 MB) and linked through DCRNN.
+- METR-LA: not downloaded; public at the same Zenodo record (72.8 MB), no login/token needed, and no manual step required.
 - Synthetic generator: not implemented.
 - No manual account/token is needed for the above public files. Caltrans PeMS 2026 requires the user's manual account/download step and remains stretch-only.
 - Data citation/license metadata on the Zenodo record is incomplete; do not redistribute the raw data without checking source terms.
@@ -88,11 +91,13 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - First model load tried the C: Hugging Face cache and failed for lack of disk space. It is fixed by setting `HF_HOME` to the project-local cache; do not restore the default cache on this machine.
 - First script version used the wrong `predict_quantiles` argument name; fixed to `inputs=`.
 - The model's native quantile grid spans 0.1-0.9. Phase 0 plot shows its 80% P10-P90 band; it is not evidence for 90% interval coverage.
+- Requests outside 0.1-0.9 through the Chronos API clip to the outer trained levels; direct P05/P95 requests do not create a native 90% interval.
 - The package and model were obtained from the official Amazon Chronos distribution; no code from reference [1] or another baseline was reused.
 - No tests have been run; this was a one-off inference sanity check.
 
 ## Latest results
 
-- One CPU inference completed for Chronos-Bolt Small (`amazon/chronos-bolt-small`), PEMS-BAY sensor 400001, 14h context and 1h horizon, using a point at the 70% chronological index. First median forecast: 68.92 mph; observed first step: 68.10 mph. Sanity check only; not a measured benchmark metric.
+- One CPU inference completed for Chronos-Bolt Small (`amazon/chronos-bolt-small`), PEMS-BAY sensor 400001, 14h context and 1h horizon, using a point at the 70% file index. First median forecast: 67.66 mph; observed first step: 68.10 mph. Sanity check only; not a measured benchmark metric.
+- Measured timing across 10 repeats: median 0.3125 process CPU seconds and 0.0857 wall seconds per forecast after warm-up.
 - Figure: `outputs/phase0/chronos_bolt_pems_bay.png`.
 - Full experiment results do not exist yet; future results belong in `EXPERIMENTS.md` and a report.
