@@ -86,6 +86,22 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 
 ## Autonomous choices
 
+### Phase 5 user decisions and autonomous choices
+
+- User notes: Phase 4 bands are treated as native P10–P90 (80%) for this phase's starting forecasts; Phase 5 calibrates to a 90% target. Freeze Phase 4 settings at alpha=1.0, collapse/branch threshold=0.1, and copula shrinkage=0.5; its 10-origin tuning and near-flat sweeps are limitations. Phase 3 kill signal remains active; p(fork) is a risk score and the primary gate, with the requested ablations.
+- Use cached Chronos q forecasts for calibration/test and cached Phase 4 test branch paths. Generate missing calibration branch paths with the same 50 sampled origins/sensors and fixed Phase 4 settings; never rerun Chronos forecasts.
+- Gate recent-drop threshold is the calibration quantile that matches the p(fork) calibration flag rate, a label-free choice. Random gate uses exactly that number of flags per block with a fixed-seed permutation. Branch-weight gate means two non-collapsed branches have positive weights. p(fork) uses frozen threshold 0.168745. No-gate is one pooled state.
+- Oracle reference gate assigns transition outcomes using true 60-minute regime labels, solely for its explicitly labelled oracle ablation and final scoring. Its gamma is inherited from the main p(fork) method; no oracle-specific tuning is performed.
+- Define conformal score as the minimum tau in [0,1] whose central per-branch empirical intervals (after dropping branches below 0.1 weight) cover the observed value. Use bisection to 1e-6 precision. If no branch's full sample support covers the value, cap the score at 1; tau=1 then gives the empirical full-support interval and may still miss, which is counted as an error.
+- For whole-path calibration, score is the maximum of the 12 marginal scores and error means at least one horizon lies outside its branch-union interval at the selected common tau. Report split intervals at 15/30/60 minutes.
+- Use finite-sample corrected buffer quantile rank `ceil((n+1)*(1-alpha_t))`, clipped to [1,n]. With no matured score history, initialize tau=0.9. Clip ACI alpha state to [0.01,0.99]. Schedule 15/30/60/path outcomes at origin+3/+6/+12/+12 rows; process outcomes with maturity time <= the current origin before prediction.
+- Tune gamma separately per non-oracle method over {0.005,0.01,0.02,0.05} by lowest calibration mean 90%-interval score across 15/30/60 minutes. For oracle, inherit the main p(fork) gamma to prevent oracle labels from influencing tuning. Keep buffers and ACI updates pooled by gate group across sensors.
+- For calm-collapse ablation, use the branch whose sample median is nearest the Chronos q50 path (the Phase 4 cache did not store the anchor index) when p(fork) says calm; retain both branches when flagged forked.
+- Matched-transition-coverage sharpness verdict uses a ±2 percentage-point difference in observed test transition coverage; if outside that band, report no matched-coverage comparison instead of tuning on test. “At least 10% sharper” means at least 10% lower mean 60-minute interval width.
+- All gates, score construction, tuning, and interval formation are label-free except the isolated oracle reference. Labels otherwise enter only final regime-stratified scoring.
+- Measured Phase 5 gamma choices: p(fork)=0.01; recent-drop=0.005; branch-weight=0.005; random=0.005; no-gate=0.005; p(fork) calm-collapse=0.005; Chronos ACI no-gate=0.005; Chronos ACI p(fork)=0.005. Oracle inherited 0.01.
+- Measured outcome: p(fork) interval coverage is 88.4% calm-flagged / 89.3% forked-flagged overall, but true-transition 60m coverage is 82.2% and whole-path group coverage is only 66.3% / 66.4%. Random group interval coverage is near 90% (89.4% / 88.7%), but whole-path coverage remains about 65%. The 85% transition target and 90% whole-path target were missed. The p(fork) AUPRC kill signal remains active (0.4299 vs 0.4450 volatility and 0.4527 recent-drop). Full outputs are under `outputs/phase5/`.
+
 ### Phase 4 user-directed pivot and implementation choices
 
 - The Phase 3 kill signal remains active: p(fork) did not outperform volatility or recent-drop in AUPRC. Proceed with Phase 4, report that result, and treat p(fork) only as a risk score. Phase 4 does not use p(fork); Phase 5 will compare gates.

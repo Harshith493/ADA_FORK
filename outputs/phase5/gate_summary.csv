@@ -1,0 +1,7 @@
+gate,calibration_flag_rate,test_flag_rate,threshold,oracle_uses_labels
+p(fork),0.159333,0.186667,0.168745,False
+recent-drop,0.159778,0.177333,0.127290,False
+branch-weight,0.944889,0.944667,,False
+random,0.159333,0.159333,,False
+no-gate,0.000000,0.000000,,False
+oracle (reference only),0.147778,0.173778,,True

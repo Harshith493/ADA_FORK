@@ -1,0 +1,18 @@
+{
+  "phase1_config": "configs/phase1_pems_bay.json",
+  "phase3_config": "configs/phase3_pems_bay.json",
+  "phase4_config": "configs/phase4_pems_bay.json",
+  "output_dir": "outputs/phase5",
+  "branch_cache": "data/cache/phase5_branch_outputs.npz",
+  "seed": 5505,
+  "gamma_grid": [0.005, 0.01, 0.02, 0.05],
+  "target_alpha": 0.1,
+  "alpha_clip": [0.01, 0.99],
+  "score_cap": 1.0,
+  "branch_drop_threshold": 0.1,
+  "calibration_branch_seed_offset": 50000,
+  "forecast_quantile_count": 200,
+  "score_bisection_steps": 20,
+  "matched_coverage_tolerance": 0.02,
+  "minimum_sharpness_gain": 0.10
+}

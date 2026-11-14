@@ -1,0 +1,10 @@
+method,gamma
+FORK ACI (p(fork)),0.01
+FORK ACI (recent-drop),0.005
+FORK ACI (branch-weight),0.005
+FORK ACI (random),0.005
+FORK ACI (no gate),0.005
+"FORK ACI (p(fork), calm collapse)",0.005
+Chronos ACI (no gate),0.005
+Chronos ACI (p(fork)),0.005
+FORK ACI (oracle reference),0.01

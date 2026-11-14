@@ -1,0 +1,17 @@
+method,flag_group,path_n,whole_path_coverage
+Chronos ACI (no gate),all,4500,0.435556
+Chronos ACI (p(fork)),calm-flagged,3660,0.489891
+Chronos ACI (p(fork)),forked-flagged,840,0.198810
+FORK ACI (branch-weight),calm-flagged,249,0.485944
+FORK ACI (branch-weight),forked-flagged,4251,0.673253
+FORK ACI (no gate),all,4500,0.662889
+FORK ACI (oracle reference),calm-flagged,3718,0.679398
+FORK ACI (oracle reference),forked-flagged,782,0.584399
+FORK ACI (p(fork)),calm-flagged,3660,0.662568
+FORK ACI (p(fork)),forked-flagged,840,0.664286
+"FORK ACI (p(fork), calm collapse)",calm-flagged,3660,0.482514
+"FORK ACI (p(fork), calm collapse)",forked-flagged,840,0.664286
+FORK ACI (random),calm-flagged,3783,0.665874
+FORK ACI (random),forked-flagged,717,0.647141
+FORK ACI (recent-drop),calm-flagged,3702,0.658563
+FORK ACI (recent-drop),forked-flagged,798,0.682957

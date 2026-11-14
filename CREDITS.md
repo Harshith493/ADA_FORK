@@ -25,3 +25,7 @@
 ## Phase 4
 
 - No external source code or new package was reused. Branch construction, residual-correlation shrinkage, Gaussian-copula sampling, energy score, and variogram score are local implementations. The local matching, k-means, quantile sampling, and interval-score components are reused from earlier project phases.
+
+## Phase 5
+
+- No external code or package is reused. The online ACI update, finite-sample score threshold, maturity queue, branch-union score, and evaluation loop are implemented in this project. Chronos forecast caches and the project's Phase 3/4 outputs are reused.
