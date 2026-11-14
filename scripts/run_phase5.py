@@ -240,8 +240,10 @@ def main():
         calm=sub[sub.flag_group=='calm-flagged']; forked=sub[sub.flag_group=='forked-flagged']; allrows=sub
         tr=sub[sub.regime=='transition']; ff=sub[sub.regime=='free-flow']; co2=sub[sub.regime=='congested']
         headrows.append({'method':method,'n':len(sub),'calm_flag_coverage':cov(calm),'forked_flag_coverage':cov(forked),'all_group_coverage':cov(allrows),
-          'free_flow_coverage':cov(ff),'transition_coverage':cov(tr),'congested_coverage':cov(co2),'mean_width_mph':width(allrows),
-          'transition_width_mph':width(tr),'transition_interval_score':score(tr),'calm_flag_path_coverage':pcover('calm-flagged'),
+          'free_flow_coverage':cov(ff),'free_flow_width_mph':width(ff),'free_flow_interval_score':score(ff),
+          'transition_coverage':cov(tr),'transition_width_mph':width(tr),'transition_interval_score':score(tr),
+          'congested_coverage':cov(co2),'congested_width_mph':width(co2),'congested_interval_score':score(co2),'mean_width_mph':width(allrows),
+          'calm_flag_path_coverage':pcover('calm-flagged'),
           'forked_flag_path_coverage':pcover('forked-flagged'),'all_path_coverage':pcover('all')})
     headline=pd.DataFrame(headrows); headline.to_csv(out/'headline_60m.csv',index=False,float_format='%.6f'); write_md(headline,out/'headline_60m.md')
     pd.DataFrame(alpha_rows).to_csv(out/'alpha_trace.csv',index=False)
