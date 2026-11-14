@@ -12,13 +12,13 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 ## Phase 1 choices awaiting the user
 
 1. **Transition scoring definition**
-   - A. Use the cited paper's traffic rule: free-flow when all 12 future steps exceed 55 mph; congested when all are below 25 mph; every other target is transition. Labels remain scoring-only. **Recommend for paper reproduction.**
-   - B. Label a window transition if any future step falls in 25-55 mph, with the same stable-regime tests. More inclusive, but changes the paper's mixed/intermediate grouping.
+   - A. Use the cited paper's traffic rule for each evaluated target period: free-flow when all target observations exceed 55 mph; congested when all are below 25 mph; every other target is transition. Labels remain scoring-only. **Recommend for paper reproduction.**
+   - B. Score the endpoint at the forecast horizon only: transition if that future speed is 25-55 mph, stable otherwise. Simpler to explain but changes the paper's target-period definition.
    - C. Use a different scoring-only rule supplied by the user. Allows a domain-specific definition, but is less directly comparable.
 2. **Sensor and window sampling**
-   - A. Follow the paper: top 50 sensors by train-only fraction below 25 mph, three seeded subsets of 30, and 50 held-out test windows per subset. **Recommend for close reproduction.**
-   - B. Use all eligible sensors and all test windows. More precise, but much more compute and less directly matched to the published sample.
-   - C. Keep the paper's sensor subsets but use all eligible test windows. A compromise that increases sample size while retaining sensor selection.
+   - A. Follow the paper: restrict to its stated Jan-May 2017 PEMS-BAY period; rank top 50 sensors by train-only fraction below 25 mph; use three seeded subsets of 30 and 50 held-out windows per subset. **Recommend for close reproduction.**
+   - B. Use all available Zenodo dates (through June 30, 2017), all eligible sensors, and all test windows. More data, but differs from the paper's stated period and sample.
+   - C. Use Jan-May with the paper's seeded sensor subsets, but score all eligible test windows. A compromise that matches period/sensors while increasing test sample size.
 3. **Context length and forecast horizons**
    - A. Use 14 hours of context and 3, 6, and 12 steps (15, 30, 60 minutes), predicting 12 steps once per window. **Recommend for direct reproduction.**
    - B. Use 14 hours and only 12 steps (one-hour headline). Faster and matches the one-pager headline, but omits two published horizons.
