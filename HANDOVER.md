@@ -31,6 +31,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 3 handover update with review state and continuation steps: `ec4b17b8b495815e4487074951d56629537e89f0`.
 - Phase 4 branch implementation, config, tests, and research notes: `c79ed1a`.
 - Phase 5 conformal implementation, full measured outputs, tests, and research notes: `4948e96`.
+- Phase 5 headline table extended with regime-specific widths/scores: `64c33d8`.
 - Phase 5 implementation, configuration, tests, outputs, and research notes: see separate implementation commit after the run.
 
 ## Exactly what to do next
