@@ -22,7 +22,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 0 notes, forecast script, and plot: `3984bbe` (PEMS-BAY CSV and model cache remain local and untracked).
 - Phase 0 approval, measured timing, and Phase 1 decision menu: `b2d23c3`.
 - Phase 1 option refinement for the paper's Jan-May data period and scoring labels: `e4bb948`.
-- Phase 1 code, cached-forecast runner, tests, metrics and plot: commit recorded after the run; see the commit list below after update.
+- Phase 1 code, config, tests, metrics, plot, and report: `538128e` (forecast cache remains local and ignored).
 
 ## Exactly what to do next
 
