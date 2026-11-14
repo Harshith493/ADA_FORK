@@ -12,9 +12,9 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 ## Current status
 
-- Phase: 1 - reproduce the failure.
-- Step: Chronos-Bolt PEMS-BAY run, metrics, plot, tests, and report are complete.
-- Status: done; present results and wait for user review/approval before Phase 2.
+- Phase: 2 - baselines.
+- Step: Re-checked references [1] and [7], documented missing method details and runtime estimate.
+- Status: in progress; no Phase 2 baseline code or run has started. Waiting on one conflict between exact BMA and label isolation.
 
 ## Completed (commit references)
 
@@ -23,18 +23,19 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 0 approval, measured timing, and Phase 1 decision menu: `b2d23c3`.
 - Phase 1 option refinement for the paper's Jan-May data period and scoring labels: `e4bb948`.
 - Phase 1 code, config, tests, metrics, plot, and report: `538128e` (forecast cache remains local and ignored).
+- Phase 2 source review, assumptions, runtime estimate, and no-reuse record: `733e73c`.
 
 ## Exactly what to do next
 
-1. Review `outputs/phase1/report.md`, `outputs/phase1/coverage_by_regime.csv`, and `outputs/phase1/coverage_by_regime.png`.
-2. Answer the three learning questions in the Phase 1 completion message.
-3. Wait for explicit approval before Phase 2 baseline implementation.
-4. After approval, implement Phase 2 baselines only; keep all forecast caches and strict chronology.
+1. Resolve the BMA conflict described at the end of `DECISIONS.md`: choose the label-free BMA-style adaptation, or explicitly allow the paper's training-only destination-regime gate as a baseline exception.
+2. After that choice, implement ACI and the history sampler plus the permitted BMA version; extend label-isolation tests and run the Phase 2 evaluation.
+3. Reuse Phase 1's test cache; add a separate calibration cache only. Run a small vectorized kNN timing pilot before the full matching/tuning run.
+4. Finish with one consolidated metrics table, two plots, tests, short teaching notes, and three questions; wait for Phase 2 review before Phase 3.
 
 ## Decisions
 
-- User decisions: Phase 0 approved; Phase 1 choices 1A, 2A, 3A, 4B, 5A implemented and recorded in [`DECISIONS.md`](DECISIONS.md).
-- Pending: user review and approval to proceed to Phase 2.
+- User decisions: Phase 0 approved; Phase 1 choices 1A, 2A, 3A, 4B, 5A; Phase 2 D1-D7 recorded in [`DECISIONS.md`](DECISIONS.md).
+- Pending: choose how to handle [1]'s regime-conditioned BMA given the project rule that methods cannot use regime labels/categories. No other Phase 2 decision is pending.
 
 ## Environment and commands
 
@@ -54,6 +55,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Paper-sample estimate: 3 seeded subsets x 30 sensors x 50 windows = 4,500 12-step forecasts; about 23.4 aggregate CPU-minutes and 6.4 serial wall-minutes for inference, with 10-20 minutes estimated end-to-end including loading, data handling, caching, and scoring. Assumes one 12-step forecast supplies horizons 3/6/12; other choices change this estimate.
 - Phase 1 command: `python scripts\run_phase1.py`; cached reruns use the existing forecasts. Cache recompute: `python scripts\run_phase1.py --force`; tests: `python -m unittest discover -s tests -v`.
 - Phase 2 and later commands: not defined yet; add one command per experiment after approval and record them here and in `EXPERIMENTS.md`.
+- Phase 2 estimate: test forecasts are cached; likely 5-30 minutes for a 50-origin calibration pass, vectorized neighbor matching, tuning, and metrics. The large work is approximately 4,500 neighbor queries over roughly 30,433 training windows of length 168. Measure a small pilot before launching the full match; if projected runtime exceeds two hours, provide Colab/Kaggle instructions first.
 
 ## File map
 
@@ -71,6 +73,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - `tests/test_phase1.py` - coverage, transition label, tail extrapolation, and label-isolation tests.
 - `outputs/phase1/` - all horizon/regime rows, plot, and concise report.
 - `data/cache/phase1_pems_bay_forecasts.npz` - local compressed forecasts (ignored by Git).
+- Phase 2 implementation files and one-command runner have not been created; wait for the BMA-method choice first.
 - `data/raw/` - downloaded raw public data (not committed).
 - `outputs/phase0/` - Phase 0 forecast figure.
 - `.cache/huggingface/` - local model cache (not committed).
@@ -106,6 +109,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - The 60-minute approximate nominal-90 transition coverage is below the published 54.9%; do not tune against the reference.
 - The package and model were obtained from the official Amazon Chronos distribution; no code from reference [1] or another baseline was reused.
 - Eight requested unit tests pass, including a test that the forecaster receives context only.
+- Reference [1] BMA explicitly uses training-estimated probabilities for destination regimes; no official code was found or reused. Exact BMA conflicts with score-only labels unless user authorizes the baseline exception.
 
 ## Latest results
 
