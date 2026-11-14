@@ -1,0 +1,8 @@
+Feature pilot: 20 train windows with kNN and 2-means in 0.08s; projected 0.9 min for train/cal/test features.
+Before full run: prior measured Chronos throughput estimates about 0.0 min for 5000 training windows; combined estimate about 0.9 min.
+Training forecast cache=hit; non-overlap examples=5000; chronological blocks train=30433, cal=4347, test=8696.
+Feature cache=hit.
+Selected k=25; L2=0.01; calibration miss fraction=0.160; hard-flag threshold=0.16874; test flag rate=0.187.
+Test AUPRC: p(fork)=0.4299; best baseline=recent-drop 0.4527; calm false-alarm rate p(fork)=0.123; kill/pivot=True.
+Synthetic check: p mean=0.609, known odds mean=0.442, odds-bin MAE=0.310, AP=0.387.
+Phase 3 complete. Outputs: D:\ADA_Courseprj\outputs\phase3; fork cache: D:\ADA_Courseprj\data\cache\phase3_fork_outputs.npz.

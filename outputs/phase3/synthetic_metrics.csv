@@ -1,0 +1,2 @@
+episodes,sensor_windows,known_mean_fork_odds,predicted_mean_p_fork,odds_mae_by_bin,brier_vs_known_odds,auprc_vs_realized_fork,realized_fork_rate,jump_mph,coupling
+600,1200,0.441917,0.608746,0.310198,0.238768,0.386673,0.470833,24.000000,0.800000

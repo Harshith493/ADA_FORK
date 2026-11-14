@@ -88,7 +88,7 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 
 ### Phase 3 approved implementation choices
 
-- Use cyclical time-of-day and day-of-week features encoded as sine/cosine pairs from each window origin; normalize sensor readings with training-block sensor mean/std only.
+- Use cyclical time-of-day and day-of-week features encoded as sine/cosine pairs from each window origin; normalize sensor readings with training-block sensor mean/std only. Scale each of the four calendar coordinates by sqrt(N/4) so their combined squared distance is comparable to the N normalized context coordinates.
 - Reuse WindowMatcher, adding optional calendar features and an explicit exclusion radius. During detector training, exclude candidate origins within 180 five-minute rows (15 hours) of the query origin. Candidate contexts and futures must still lie wholly in the training block.
 - Sweep k in [25, 50, 100]; choose k and logistic L2 strength on calibration by log loss for the approximate-90 Chronos miss target only. Do not use transition/regime labels for detector training or tuning.
 - Use deterministic 2-means on train-standardized 12-step neighbor futures. Bimodality separation is Euclidean centroid distance divided by pooled within-cluster RMS spread; minority share is min(cluster sizes)/k, retained as the Phase 4 branch weight.
@@ -97,3 +97,10 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 - Set the hard-flag threshold to the calibration p(fork) quantile that yields the calibration Chronos-miss fraction; freeze it before test and report test flag rate.
 - Generate synthetic independent 14-hour contexts with two speed regimes, observable fork-odds levels, configurable jump magnitude and branch coupling. Fit/use the PEMS-trained detector without exposing synthetic fork outcomes; compare predicted p(fork) to generator-known odds as a scoring check only.
 - No code, tuning decision, or feature may inspect test transition labels. Test transition labels are passed only to final scoring and plotting functions.
+
+### Phase 3 measured selections and review
+
+- Selected k=25 and logistic L2=0.01 by calibration log loss on the approximate-90 miss target; calibration misses were 15.96%. Frozen hard-flag threshold was p(fork)=0.168745; test flag rate was 18.67%.
+- Test AUPRCs for 60-minute transition: p(fork) 0.4299, volatility 0.4438, recent-drop 0.4527, CUSUM 0.3405. p(fork) does not beat volatility, so the requested kill/pivot signal is active. Calm false-alarm rates at calibration-frozen thresholds: p(fork) 0.123, volatility 0.874, recent-drop 0.186, CUSUM 1.000.
+- Synthetic (600 episodes, 1,200 sensor windows; known mean odds 0.442, jump 24 mph, coupling 0.8): mean predicted p=0.609, odds-bin MAE 0.310, Brier against known fractional odds 0.239, AP against realized fork events 0.387 (realized event rate 0.471). This is poor probability transfer.
+- Interpretation: this detector is not validated as a transition detector and its output is trained to predict model misses, not a directly observed two-branch event. Keep it as an experimental risk score; revisit the miss proxy/features before treating p(fork) as calibrated latent fork probability.

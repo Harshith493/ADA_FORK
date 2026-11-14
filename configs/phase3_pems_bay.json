@@ -1,0 +1,20 @@
+{
+  "phase1_config": "configs/phase1_pems_bay.json",
+  "train_forecast_cache": "data/cache/phase3_train_5000_forecasts.npz",
+  "feature_cache": "data/cache/phase3_feature_cache.npz",
+  "fork_output_cache": "data/cache/phase3_fork_outputs.npz",
+  "output_dir": "outputs/phase3",
+  "train_window_count": 5000,
+  "train_sample_seed": 3051,
+  "feature_seed": 3117,
+  "train_exclusion_rows": 180,
+  "k_grid": [25, 50, 100],
+  "l2_grid": [0.01, 0.1, 1.0],
+  "kmeans_restarts": 3,
+  "kmeans_iterations": 30,
+  "forecast_batch_size": 30,
+  "synthetic_count": 600,
+  "synthetic_seed": 90210,
+  "synthetic_jump_mph": 24.0,
+  "synthetic_branch_coupling": 0.8
+}

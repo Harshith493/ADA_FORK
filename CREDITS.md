@@ -16,3 +16,8 @@
 - Rechecked reference [7] from the official NeurIPS paper page/PDF for the ACI update rule. No external ACI implementation was reused; the update rule is implemented locally from the paper description.
 - Phase 2 baselines and matching are original local implementations. No third-party baseline code, copula code, or other reference implementation was copied or imported.
 - Sources: [1] https://arxiv.org/html/2606.18367; [7] https://papers.neurips.cc/paper_files/paper/2021/file/0d441de75945e5acbc865406fc9a2559-Paper.pdf. Chronos runtime and weights are the same already credited above.
+
+## Phase 3
+
+- The calendar embedding, train-only matching extension, deterministic two-means, logistic regression, volatility/recent-drop/CUSUM scores, synthetic generator, and metrics are implemented locally with NumPy/pandas. No additional package or external code was used.
+- Chronos-Bolt weights/inference and the PEMS-BAY data are previously credited above. Phase 3 reused the Phase 1 test-forecast cache and Phase 2 calibration-forecast cache.

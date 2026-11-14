@@ -51,3 +51,17 @@
 - History sampler's 73.9% is 7.1-8.1 points below [1]'s approximate 81-82%. Global label-free BMA adaptation is 1.2 points below [1]'s 73.6%, but is not exact BMA (the paper gate uses training-only destination-regime labels). Paper-style adaptation gives 54.9%. These are descriptive, not like-for-like reproduction gaps.
 - Tests: `python -m unittest discover -s tests -v` passes 15 tests, including ACI update, interval score, history quantiles, mixture replacement, train-only matching and context-only forecaster boundary.
 - Implementation guesses and deviations are enumerated in `DECISIONS.md` and `outputs/phase2/report.md`; no external baseline code was reused.
+
+## Phase 3: fork detector (PEMS-BAY and synthetic)
+
+- One-command run: `python scripts\run_phase3.py`; config: `configs/phase3_pems_bay.json`. Tests: `python -m unittest discover -s tests -v`.
+- No additional dependencies were installed. The project does not contain a requirements.txt; k-means and logistic regression are implemented with NumPy.
+- Phase 2 concern audit: history future candidates were training-only and ended before calibration; they cannot overlap the later cal/test blocks. Sample-based MAE uses per-step sample median. Approximate-90 gamma=0.001 was at the sweep minimum; original ACI updated sampled origins only. Added all-valid-origin ACI (same cal gamma), which produced 58.2% transition coverage, 91.7% calm coverage, 18.39 mph mean width, 48.65 interval score, and 4.45 MAE.
+- Training forecast cache uses 5,000 seeded windows from 180-row spacing per sensor; each full context and target stays in train. Train/cal/test row blocks remain 30,433/4,347/8,696. The matcher excludes +/-180 rows for train self-matches and candidate histories remain train-only.
+- Phase 3 features: normalized recent 168 readings plus cyclic time/day features in matching; two-means separation, minority share, Chronos approximate-90 spread, and neighbor/Chronos median gap. Fit target is the Chronos approximate-90 miss indicator, never transition labels. Cal tunes k/L2 and thresholds; test transition labels enter only scoring.
+- Pilot: 20 kNN+2-means feature windows in 0.08s, projected 0.9 min for feature extraction. Prior Chronos throughput projected 0.3 min for 5,000 forecasts; combined projection about 1.2 minutes. Run completed with caches created.
+- Selected k=25, L2=0.01; calibration miss fraction 15.96%; hard-flag threshold 0.168745; test flag rate 18.67%.
+- Test AUPRC: p(fork) 0.4291; volatility 0.4438; recent-drop 0.4527; CUSUM 0.3405. p(fork) is below volatility, activating the kill/pivot signal. Calm false-alarm rates: 0.123, 0.874, 0.186, 1.000 respectively.
+- Synthetic: 600 episodes, two speed regimes, 24 mph jump, branch coupling 0.8. Known mean odds 0.442; mean p 0.609; odds-bin MAE 0.310; Brier vs odds 0.239; AP vs realized fork events 0.387 (event prevalence 0.471). Probability transfer is poor.
+- Full outputs: `outputs/phase3/report.md`, `detector_metrics.csv`, `calibration_sweep.csv`, `precision_recall.csv`, `test_predictions.csv`, synthetic CSVs and plots. Phase 4/5 cache: `data/cache/phase3_fork_outputs.npz` (ignored local file), containing calibration/test p(fork) and minority shares.
+- All 25 unit tests pass, including label-dependency, no-self-match, train-only neighbor, toy two-means, tie-safe PR, and fixed-seed determinism checks. No external code or new package was reused.
