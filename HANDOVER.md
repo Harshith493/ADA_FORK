@@ -12,9 +12,9 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 ## Current status
 
-- Phase: 0 - setup and data access.
-- Step: Phase 0 review approved; timing recorded; present Phase 1 choices.
-- Status: done; do not start Phase 1 until the user selects the pending choices in `DECISIONS.md`.
+- Phase: 1 - reproduce the failure.
+- Step: Chronos-Bolt PEMS-BAY run, metrics, plot, tests, and report are complete.
+- Status: done; present results and wait for user review/approval before Phase 2.
 
 ## Completed (commit references)
 
@@ -22,19 +22,19 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 0 notes, forecast script, and plot: `3984bbe` (PEMS-BAY CSV and model cache remain local and untracked).
 - Phase 0 approval, measured timing, and Phase 1 decision menu: `b2d23c3`.
 - Phase 1 option refinement for the paper's Jan-May data period and scoring labels: `e4bb948`.
+- Phase 1 code, cached-forecast runner, tests, metrics and plot: commit recorded after the run; see the commit list below after update.
 
 ## Exactly what to do next
 
-1. Wait for the user's choices on the five Phase 1 items in `DECISIONS.md`.
-2. Record those choices and rationale in `DECISIONS.md`.
-3. Reconcile the PEMS-BAY CSV's observed date span (through 2017-06-30) against the paper's stated Jan-May period before fixing the reproduction subset.
-4. Only after the choices, build the Phase 1 chronological data/split and native Chronos-Bolt reproduction pipeline; do not add FORK logic yet.
-5. After Phase 1, save metrics and plots, update this file, explain the findings, ask three learning questions, and wait for approval.
+1. Review `outputs/phase1/report.md`, `outputs/phase1/coverage_by_regime.csv`, and `outputs/phase1/coverage_by_regime.png`.
+2. Answer the three learning questions in the Phase 1 completion message.
+3. Wait for explicit approval before Phase 2 baseline implementation.
+4. After approval, implement Phase 2 baselines only; keep all forecast caches and strict chronology.
 
 ## Decisions
 
-- User decisions: Phase 0 approved with no additional notes; see [`DECISIONS.md`](DECISIONS.md).
-- Pending: transition definition; sensor/window subsampling; context/horizon; 90% interval method; chronological split; see options in `DECISIONS.md`.
+- User decisions: Phase 0 approved; Phase 1 choices 1A, 2A, 3A, 4B, 5A implemented and recorded in [`DECISIONS.md`](DECISIONS.md).
+- Pending: user review and approval to proceed to Phase 2.
 
 ## Environment and commands
 
@@ -52,7 +52,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 0 one-forecast command: `python scripts\phase0_forecast.py` (run from repo root; internet needed only on first model load).
 - Timing: 10 repeats after one warm-up; median 0.3125 process CPU seconds and 0.0857 wall seconds per forecast with model loaded. Process CPU time can exceed wall time when inference uses multiple threads.
 - Paper-sample estimate: 3 seeded subsets x 30 sensors x 50 windows = 4,500 12-step forecasts; about 23.4 aggregate CPU-minutes and 6.4 serial wall-minutes for inference, with 10-20 minutes estimated end-to-end including loading, data handling, caching, and scoring. Assumes one 12-step forecast supplies horizons 3/6/12; other choices change this estimate.
-- Phase 1 and later commands: not defined yet; create one command per experiment after approval and record each here and in `EXPERIMENTS.md`.
+- Phase 1 command: `python scripts\run_phase1.py`; cached reruns use the existing forecasts. Cache recompute: `python scripts\run_phase1.py --force`; tests: `python -m unittest discover -s tests -v`.
+- Phase 2 and later commands: not defined yet; add one command per experiment after approval and record them here and in `EXPERIMENTS.md`.
 
 ## File map
 
@@ -64,6 +65,12 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - `EXPERIMENTS.md` - reproducible experiment configurations and outcomes.
 - `CREDITS.md` - external components, sources, and licenses.
 - `scripts/phase0_forecast.py` - one CPU-only Chronos-Bolt sanity forecast.
+- `scripts/run_phase1.py` - one-command Phase 1 experiment; uses cached forecasts when config and data hashes match.
+- `configs/phase1_pems_bay.json` - fixed Phase 1 model, time range, splits, seeds, and sampling settings.
+- `src/fork/phase1.py` - scoring-only regime labels, coverage metrics, interval extrapolation, safe forecasting boundary, caching, and report generation.
+- `tests/test_phase1.py` - coverage, transition label, tail extrapolation, and label-isolation tests.
+- `outputs/phase1/` - all horizon/regime rows, plot, and concise report.
+- `data/cache/phase1_pems_bay_forecasts.npz` - local compressed forecasts (ignored by Git).
 - `data/raw/` - downloaded raw public data (not committed).
 - `outputs/phase0/` - Phase 0 forecast figure.
 - `.cache/huggingface/` - local model cache (not committed).
@@ -80,8 +87,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 ## Data status
 
-- PEMS-BAY: present at `data/raw/PEMS-BAY.csv` (85,718,439 bytes, Zenodo record 5146275). The CSV covers 2017-01-01 through 2017-06-30.
-- METR-LA: not downloaded; public at the same Zenodo record (72.8 MB), no login/token needed, and no manual step required.
+- PEMS-BAY: present at `data/raw/PEMS-BAY.csv` (85,718,439 bytes, Zenodo record 5146275); Phase 1 used 2017-01-01 through 2017-05-31 inclusive.
+- METR-LA: not downloaded by user request; public at the same Zenodo record, defer until needed.
 - Synthetic generator: not implemented.
 - No manual account/token is needed for the above public files. Caltrans PeMS 2026 requires the user's manual account/download step and remains stretch-only.
 - Data citation/license metadata on the Zenodo record is incomplete; do not redistribute the raw data without checking source terms.
@@ -93,12 +100,17 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - First script version used the wrong `predict_quantiles` argument name; fixed to `inputs=`.
 - The model's native quantile grid spans 0.1-0.9. Phase 0 plot shows its 80% P10-P90 band; it is not evidence for 90% interval coverage.
 - Requests outside 0.1-0.9 through the Chronos API clip to the outer trained levels; direct P05/P95 requests do not create a native 90% interval.
+- Phase 1's approximate q05/q95 are linear extrapolations from adjacent outer deciles; this assumes local tail linearity and has no 90% guarantee.
+- The sampled-window selection method is unspecified in reference [1]; the run uses one seed-42 random sample shared across the three sensor groups.
+- PEMS-BAY has a single 65-minute timestamp gap within the chosen period; windows crossing non-5-minute gaps are excluded.
+- The 60-minute approximate nominal-90 transition coverage is below the published 54.9%; do not tune against the reference.
 - The package and model were obtained from the official Amazon Chronos distribution; no code from reference [1] or another baseline was reused.
-- No tests have been run; this was a one-off inference sanity check.
+- Eight requested unit tests pass, including a test that the forecaster receives context only.
 
 ## Latest results
 
 - One CPU inference completed for Chronos-Bolt Small (`amazon/chronos-bolt-small`), PEMS-BAY sensor 400001, 14h context and 1h horizon, using a point at the 70% file index. First median forecast: 67.66 mph; observed first step: 68.10 mph. Sanity check only; not a measured benchmark metric.
 - Measured timing across 10 repeats: median 0.3125 process CPU seconds and 0.0857 wall seconds per forecast after warm-up.
 - Figure: `outputs/phase0/chronos_bolt_pems_bay.png`.
-- Full experiment results do not exist yet; future results belong in `EXPERIMENTS.md` and a report.
+- Phase 1 headline: approximate nominal 90% transition coverage at 60 minutes = 49.7% (n=782); native P10-P90 80% transition coverage = 43.9% (n=782). Published nominal-90 reference is 54.9%, a -5.2 percentage-point descriptive gap; interval and sampling details differ.
+- Full results: `outputs/phase1/coverage_by_regime.csv`; plot: `outputs/phase1/coverage_by_regime.png`; report: `outputs/phase1/report.md`; run record: `EXPERIMENTS.md`.
