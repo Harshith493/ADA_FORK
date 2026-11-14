@@ -14,7 +14,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 - Phase: 2 - baselines.
 - Step: Phase 2 evaluation and write-up complete; awaiting user review.
-- Status: done, pending separate implementation and handover commits.
+- Status: done, awaiting user's Phase 2 review.
 
 ## Completed (commit references)
 
@@ -25,7 +25,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 1 code, config, tests, metrics, plot, and report: `538128e` (forecast cache remains local and ignored).
 - Phase 2 source review, assumptions, runtime estimate, and no-reuse record: `733e73c`.
 - Phase 2 implementation, tests, metrics, report, plots, and research notes: `0c7255d974dddad3daca7c686b515308d62974a1`.
-- Phase 2 handover update with continuation details: this separate commit.
+- Phase 2 handover update with continuation details: `ea95679626fd77e28a5b7c648e2563e5b09c2930`.
 
 ## Exactly what to do next
 
