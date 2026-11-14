@@ -86,6 +86,19 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 
 ## Autonomous choices
 
+### Phase 4 user-directed pivot and implementation choices
+
+- The Phase 3 kill signal remains active: p(fork) did not outperform volatility or recent-drop in AUPRC. Proceed with Phase 4, report that result, and treat p(fork) only as a risk score. Phase 4 does not use p(fork); Phase 5 will compare gates.
+- Keep labels entirely out of branch formation and calibration tuning. The Phase 4 branch API takes only neighbor paths, Chronos quantiles, training normalization, and numeric tuning values. Test labels are read only after paths and intervals have been built, for scoring.
+- Use the user's k=25 and seed 4404. Tune alpha in {0.5,1,2} and a shared collapse/minimum-interval branch-weight threshold in {0,.05,.1,.2} on the first 10 sampled calibration origins across the three selected sensor groups. This is a deterministic calibration-only subsample to keep the experiment lean.
+- Select alpha and threshold by mean 60-minute approximate-90 interval score on that calibration subset. Select Gaussian-copula shrinkage from {0,.5,1} by calibration energy score after freezing alpha and threshold. The shared threshold controls both branch collapse and interval union branch inclusion.
+- The closest cluster center to the Chronos median uses Chronos quantile pseudo-samples; the other uses its neighbor-cluster center plus within-cluster residuals. This is the operational interpretation of “Chronos-anchored” and uses no labels.
+- Estimate pooled temporal correlation from the cached Phase 3 train-only Chronos forecast residuals, and branch-local correlations from neighbor paths' within-cluster residuals. Use a numerically stabilized Gaussian copula; no cross-sensor dependence is modeled.
+- Evaluate exactly the three path baselines requested in the lean Phase 4 prompt: independent Chronos quantile samples, Chronos samples with pooled global copula, and a 50/50 global label-free BMA sample (Phase 2 calibration-selected global weight). No external code or package is reused.
+- For the D8 word “similar,” use an explicit ±5 percentage-point transition-coverage tolerance against the consecutive-origin ACI figure; compare the FORK mean 60-minute interval width against 18.39 mph. This is a descriptive rule, not a tuning target.
+- Energy score uses a fixed-seed 500-pair Monte Carlo estimate; variogram score uses p=0.5 across all horizon pairs. Branch forecasts use 200 paths and deterministic seeds.
+- Full Phase 4 experiment was intentionally not run by the agent per the user's final instruction; selected calibration values and test numbers remain pending the user's one-command run.
+
 ### Phase 3 approved implementation choices
 
 - Use cyclical time-of-day and day-of-week features encoded as sine/cosine pairs from each window origin; normalize sensor readings with training-block sensor mean/std only. Scale each of the four calendar coordinates by sqrt(N/4) so their combined squared distance is comparable to the N normalized context coordinates.

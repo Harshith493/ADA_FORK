@@ -65,3 +65,11 @@
 - Synthetic: 600 episodes, two speed regimes, 24 mph jump, branch coupling 0.8. Known mean odds 0.442; mean p 0.609; odds-bin MAE 0.310; Brier vs odds 0.239; AP vs realized fork events 0.387 (event prevalence 0.471). Probability transfer is poor.
 - Full outputs: `outputs/phase3/report.md`, `detector_metrics.csv`, `calibration_sweep.csv`, `precision_recall.csv`, `test_predictions.csv`, synthetic CSVs and plots. Phase 4/5 cache: `data/cache/phase3_fork_outputs.npz` (ignored local file), containing calibration/test p(fork) and minority shares.
 - All 25 unit tests pass, including label-dependency, no-self-match, train-only neighbor, toy two-means, tie-safe PR, and fixed-seed determinism checks. No external code or new package was reused.
+## Phase 4: scenario branches (lean implementation)
+
+- Command: `python scripts\run_phase4.py`; config: `configs/phase4_pems_bay.json`.
+- Uses Phase 1 test forecasts, Phase 2 calibration forecasts, Phase 3 5,000-window training forecast cache, and the PEMS-BAY training block. Neighbor candidates and the pooled residual correlation come only from training. Context matching excludes a ±180-row neighborhood; regime/transition labels are used only after construction for score grouping.
+- Builds at most two branches using the in-repo deterministic 2-means implementation and k=25. Calibration tunes smoothing alpha and shared collapse/interval inclusion threshold on the first 10 calibration origins; it then tunes copula shrinkage by calibration energy score. Test labels are not supplied to these computations.
+- Produces 200 seeded paths per test window for FORK, independent Chronos, global-copula Chronos, and global label-free BMA. Metrics CSV/Markdown and the example plot go to `outputs/phase4/`; path/weight cache is ignored at `data/cache/phase4_branch_cache.npz`.
+- Quick validation: Python compilation and the full unit suite pass (30 tests). The full Phase 4 script was not run per user request; no Phase 4 metric is claimed yet. The generated D8 note compares to the previously measured consecutive-origin ACI: 58.2% transition coverage, 91.7% calm coverage, 18.39 mph width.
+- Calibration energy scores use a 500-pair fixed-seed estimate. No new packages or external code were used.\n

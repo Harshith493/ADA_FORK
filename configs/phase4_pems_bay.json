@@ -1,0 +1,14 @@
+{
+  "phase1_config": "configs/phase1_pems_bay.json",
+  "phase3_config": "configs/phase3_pems_bay.json",
+  "output_dir": "outputs/phase4",
+  "branch_cache": "data/cache/phase4_branch_cache.npz",
+  "k": 25,
+  "alpha_grid": [0.5, 1.0, 2.0],
+  "threshold_grid": [0.0, 0.05, 0.10, 0.20],
+  "shrinkage_grid": [0.0, 0.5, 1.0],
+  "paths": 200,
+  "seed": 4404,
+  "calibration_tune_origins": 10,
+  "energy_pair_count": 500
+}

@@ -21,3 +21,7 @@
 
 - The calendar embedding, train-only matching extension, deterministic two-means, logistic regression, volatility/recent-drop/CUSUM scores, synthetic generator, and metrics are implemented locally with NumPy/pandas. No additional package or external code was used.
 - Chronos-Bolt weights/inference and the PEMS-BAY data are previously credited above. Phase 3 reused the Phase 1 test-forecast cache and Phase 2 calibration-forecast cache.
+
+## Phase 4
+
+- No external source code or new package was reused. Branch construction, residual-correlation shrinkage, Gaussian-copula sampling, energy score, and variogram score are local implementations. The local matching, k-means, quantile sampling, and interval-score components are reused from earlier project phases.
