@@ -9,3 +9,8 @@
 ## Baseline code check
 
 - Reference [1] is accessible on arXiv. No official companion code repository or code license was located in the paper record/page during Phase 0. No reference or baseline code has been reused. If code is identified later, record its exact URL and license, then wait for user approval before reusing it.
+
+## Phase 2 source re-check
+
+- Re-read reference [1] from its arXiv HTML/PDF and searched the paper title for an author-linked repository. No official code was found or reused.
+- Rechecked reference [7] from the official NeurIPS paper page/PDF for the ACI update rule. No external ACI implementation was reused; Phase 2 will implement the rule from the paper description if the method conflict is resolved.

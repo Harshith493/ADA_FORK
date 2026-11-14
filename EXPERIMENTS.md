@@ -29,3 +29,11 @@
 - All horizons and regimes, seed-level rows, counts, and mean widths are in `outputs/phase1/coverage_by_regime.csv`; plot and summary are `outputs/phase1/coverage_by_regime.png` and `outputs/phase1/report.md`.
 - Verification requested by the user: `python -m unittest discover -s tests -v` passes 8 tests (coverage metric, regime labels, interval extrapolation, and label isolation). A second run returned `cache=hit` and identical headline metrics.
 - No tuning was performed against the published result. PEMS-BAY is 2017 and may overlap Chronos training data; this is a historical reproduction, not a post-cutoff test.
+
+## Phase 2 preflight (no baseline run yet)
+
+- Re-verified reference [1] and [7] from their paper records/full text. No official code for [1] was found; no external code was reused.
+- Phase 1 test forecasts are reused from `data/cache/phase1_pems_bay_forecasts.npz`; shape `(3, 30, 50, 12, 5)`. They will not be regenerated.
+- Calibration forecasts are absent from that cache. A separate 50-origin calibration cache is needed for calibration-only tuning; predicted forecast pass is 150 batches of 30 sensors and roughly 18-30 seconds based on Phase 1 throughput.
+- The expensive part is exact history-window nearest-neighbor matching, estimated at 4,500 queries against about 30,433 train windows x 168 context points. Preliminary total estimate is 5-30 minutes with vectorized computation; run a small timing pilot first. Current estimate is below two hours.
+- Work is paused before baseline coding because reference [1]'s BMA uses destination-regime-conditioned training probabilities, while the project rule prohibits methods from using regime labels/categories. See the two resolution options at the end of `DECISIONS.md`.
