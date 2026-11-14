@@ -30,10 +30,15 @@
 - Verification requested by the user: `python -m unittest discover -s tests -v` passes 8 tests (coverage metric, regime labels, interval extrapolation, and label isolation). A second run returned `cache=hit` and identical headline metrics.
 - No tuning was performed against the published result. PEMS-BAY is 2017 and may overlap Chronos training data; this is a historical reproduction, not a post-cutoff test.
 
-## Phase 2 preflight (no baseline run yet)
+## Phase 2: ACI, history sampling, and label-free BMA-style adaptation
 
 - Re-verified reference [1] and [7] from their paper records/full text. No official code for [1] was found; no external code was reused.
-- Phase 1 test forecasts are reused from `data/cache/phase1_pems_bay_forecasts.npz`; shape `(3, 30, 50, 12, 5)`. They will not be regenerated.
-- Calibration forecasts are absent from that cache. A separate 50-origin calibration cache is needed for calibration-only tuning; predicted forecast pass is 150 batches of 30 sensors and roughly 18-30 seconds based on Phase 1 throughput.
-- The expensive part is exact history-window nearest-neighbor matching, estimated at 4,500 queries against about 30,433 train windows x 168 context points. Preliminary total estimate is 5-30 minutes with vectorized computation; run a small timing pilot first. Current estimate is below two hours.
-- Work is paused before baseline coding because reference [1]'s BMA uses destination-regime-conditioned training probabilities, while the project rule prohibits methods from using regime labels/categories. See the two resolution options at the end of `DECISIONS.md`.
+- One-command run: `python scripts\run_phase2.py`; use `--force` only to replace the separate calibration forecast cache. Phase 1 test cache is always reused.
+- Config: `configs/phase2_pems_bay.json`. Calibration cache: `data/cache/phase2_calib_forecasts.npz` (50 origins x 3 x 30 sensors); test cache shape `(3, 30, 50, 12, 5)`.
+- kNN timing pilot: 20 queries in 0.01-0.02 seconds; linear estimate for matching the distinct selected sensors/origins was about 0.1 minutes. Whole run completed in roughly one minute after model load. No hosted runtime was needed.
+- Exact matching uses 168-point train-standardized sensor contexts and timestamp-contiguous windows only. Train block remains strictly before calibration/test; k selected on calibration. Gamma and weights are also chosen on calibration only. ACI states are one per sensor/method; the same origin uses one alpha across horizons, and matured outcomes update the state before a subsequent origin.
+- Selected parameters: `k=50`, global weight `0.5`, paper-style 10-window weight `0.1`; gamma `0.001` approximate90, `0.005` native80, `0.001` each BMA+ACI variation. Full sweeps in `outputs/phase2/`.
+- Headline 60-minute transition coverage: native approximate90 49.7%; ACI approximate90 50.4%; history sampler 73.9%; label-free BMA+ACI paper-style 54.9%; label-free BMA+ACI global 72.4%. Native P10-P90 43.9%; its ACI version 44.9%. See `outputs/phase2/headline.csv` for widths, interval scores, MAE and calm coverage.
+- History sampler's 73.9% is 7.1-8.1 points below [1]'s approximate 81-82%. Global label-free BMA adaptation is 1.2 points below [1]'s 73.6%, but is not exact BMA (the paper gate uses training-only destination-regime labels). Paper-style adaptation gives 54.9%. These are descriptive, not like-for-like reproduction gaps.
+- Tests: `python -m unittest discover -s tests -v` passes 15 tests, including ACI update, interval score, history quantiles, mixture replacement, train-only matching and context-only forecaster boundary.
+- Implementation guesses and deviations are enumerated in `DECISIONS.md` and `outputs/phase2/report.md`; no external baseline code was reused.

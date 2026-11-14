@@ -1,0 +1,64 @@
+method,horizon_minutes,regime,n,coverage,mean_width_mph,interval_score,point_mae
+ACI approximate nominal 90%,15,congested,429.000000,0.946387,15.729966,20.411320,2.668662
+ACI approximate nominal 90%,15,free-flow,3626.000000,0.896580,6.073713,7.444812,1.125067
+ACI approximate nominal 90%,15,transition,445.000000,0.656180,15.862839,85.107459,8.154130
+ACI approximate nominal 90%,30,congested,378.000000,0.949735,20.952379,24.432210,3.351383
+ACI approximate nominal 90%,30,free-flow,3547.000000,0.882718,7.687583,10.133265,1.350460
+ACI approximate nominal 90%,30,transition,575.000000,0.603478,18.958711,136.865684,11.998787
+ACI approximate nominal 90%,60,congested,301.000000,0.933555,28.737062,32.260603,4.068850
+ACI approximate nominal 90%,60,free-flow,3417.000000,0.878256,10.546863,13.891574,1.637139
+ACI approximate nominal 90%,60,transition,782.000000,0.503836,22.494853,204.238154,16.873976
+ACI native 80% (P10-P90),15,congested,429.000000,0.909091,12.804113,16.423170,2.668662
+ACI native 80% (P10-P90),15,free-flow,3626.000000,0.844732,4.880536,6.000825,1.125067
+ACI native 80% (P10-P90),15,transition,445.000000,0.606742,13.249528,52.061771,8.154130
+ACI native 80% (P10-P90),30,congested,378.000000,0.923280,16.788728,19.349899,3.351383
+ACI native 80% (P10-P90),30,free-flow,3547.000000,0.835354,6.179375,7.921385,1.350460
+ACI native 80% (P10-P90),30,transition,575.000000,0.530435,15.756951,80.949386,11.998787
+ACI native 80% (P10-P90),60,congested,301.000000,0.883721,23.047646,26.054930,4.068850
+ACI native 80% (P10-P90),60,free-flow,3417.000000,0.812994,8.458101,10.837458,1.637139
+ACI native 80% (P10-P90),60,transition,782.000000,0.448849,18.588090,119.119403,16.873976
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",15,congested,429.000000,0.941725,17.235324,21.691634,2.324574
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",15,free-flow,3626.000000,0.915058,6.074462,7.070196,1.080975
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",15,transition,445.000000,0.802247,20.422195,61.292942,7.784060
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",30,congested,378.000000,0.965608,23.329621,25.509555,2.769552
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",30,free-flow,3547.000000,0.908373,7.436135,9.126449,1.252964
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",30,transition,575.000000,0.763478,24.834332,70.653890,10.533120
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",60,congested,301.000000,0.946844,32.793634,34.416226,3.031751
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",60,free-flow,3417.000000,0.891718,9.887347,12.210483,1.393007
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",60,transition,782.000000,0.723785,30.726064,92.756918,14.109043
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",15,congested,429.000000,0.923077,13.473708,19.791545,2.534408
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",15,free-flow,3626.000000,0.870656,5.125294,6.853879,1.083984
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",15,transition,445.000000,0.667416,14.865237,83.729772,8.035741
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",30,congested,378.000000,0.941799,17.708776,21.407330,3.149508
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",30,free-flow,3547.000000,0.854243,6.435242,9.295550,1.298325
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",30,transition,575.000000,0.586087,17.911180,124.358397,11.726174
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",60,congested,301.000000,0.916944,24.777935,29.053814,3.773862
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",60,free-flow,3417.000000,0.841381,8.814999,12.537832,1.544890
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",60,transition,782.000000,0.548593,22.683104,167.766650,16.410470
+History-sampling (our version of [1]),15,congested,429.000000,0.925408,17.132378,22.661981,3.101981
+History-sampling (our version of [1]),15,free-flow,3626.000000,0.840044,5.578225,8.770724,1.299228
+History-sampling (our version of [1]),15,transition,445.000000,0.725843,20.490449,54.241909,8.573820
+History-sampling (our version of [1]),30,congested,378.000000,0.878307,23.031323,26.902752,3.293122
+History-sampling (our version of [1]),30,free-flow,3547.000000,0.820130,6.218111,10.314306,1.417846
+History-sampling (our version of [1]),30,transition,575.000000,0.756522,23.628452,60.645844,9.636869
+History-sampling (our version of [1]),60,congested,301.000000,0.887043,28.229186,31.851777,4.780233
+History-sampling (our version of [1]),60,free-flow,3417.000000,0.807726,6.826037,11.319541,1.492011
+History-sampling (our version of [1]),60,transition,782.000000,0.739130,26.142832,78.426208,11.654668
+Native Chronos-Bolt (approximate nominal 90%),15,congested,429.000000,0.946387,15.455417,20.263982,2.668662
+Native Chronos-Bolt (approximate nominal 90%),15,free-flow,3626.000000,0.892443,5.940094,7.410282,1.125067
+Native Chronos-Bolt (approximate nominal 90%),15,transition,445.000000,0.656180,15.492387,85.658058,8.154130
+Native Chronos-Bolt (approximate nominal 90%),30,congested,378.000000,0.949735,20.574651,24.208513,3.351383
+Native Chronos-Bolt (approximate nominal 90%),30,free-flow,3547.000000,0.877361,7.516914,10.097404,1.350460
+Native Chronos-Bolt (approximate nominal 90%),30,transition,575.000000,0.587826,18.535846,137.744111,11.998787
+Native Chronos-Bolt (approximate nominal 90%),60,congested,301.000000,0.926910,28.270398,32.081149,4.068850
+Native Chronos-Bolt (approximate nominal 90%),60,free-flow,3417.000000,0.871817,10.311334,13.816011,1.637139
+Native Chronos-Bolt (approximate nominal 90%),60,transition,782.000000,0.497442,21.979109,205.530685,16.873976
+Native Chronos-Bolt (native 80%),15,congested,429.000000,0.911422,12.695712,16.316371,2.668662
+Native Chronos-Bolt (native 80%),15,free-flow,3626.000000,0.841975,4.823627,5.965716,1.125067
+Native Chronos-Bolt (native 80%),15,transition,445.000000,0.600000,13.021609,52.218634,8.154130
+Native Chronos-Bolt (native 80%),30,congested,378.000000,0.923280,16.649277,19.246738,3.351383
+Native Chronos-Bolt (native 80%),30,free-flow,3547.000000,0.829997,6.106969,7.874491,1.350460
+Native Chronos-Bolt (native 80%),30,transition,575.000000,0.526957,15.491230,81.207359,11.998787
+Native Chronos-Bolt (native 80%),60,congested,301.000000,0.897010,22.884894,25.949873,4.068850
+Native Chronos-Bolt (native 80%),60,free-flow,3417.000000,0.815628,8.363443,10.785649,1.637139
+Native Chronos-Bolt (native 80%),60,transition,782.000000,0.438619,18.261146,119.361899,16.873976

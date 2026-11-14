@@ -1,0 +1,8 @@
+method,transition_n,transition_coverage,calm_n,calm_coverage,mean_width,interval_score,mae
+ACI approximate nominal 90%,782,0.503836,3718,0.882733,13.839880,48.198263,4.447617
+ACI native 80% (P10-P90),782,0.448849,3718,0.818720,11.194347,30.672334,4.447617
+"BMA+ACI global weight — our label-free adaptation of BMA, not exact BMA from [1]",782,0.723785,3718,0.896181,15.040829,27.692981,3.712385
+"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]",782,0.548593,3718,0.847499,12.292711,40.617887,4.277291
+History-sampling (our version of [1]),782,0.739130,3718,0.814147,11.614500,24.354567,3.478000
+Native Chronos-Bolt (approximate nominal 90%),782,0.497442,3718,0.876278,13.540196,48.353496,4.447617
+Native Chronos-Bolt (native 80%),782,0.438619,3718,0.822216,11.054768,30.668107,4.447617

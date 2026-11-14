@@ -13,4 +13,6 @@
 ## Phase 2 source re-check
 
 - Re-read reference [1] from its arXiv HTML/PDF and searched the paper title for an author-linked repository. No official code was found or reused.
-- Rechecked reference [7] from the official NeurIPS paper page/PDF for the ACI update rule. No external ACI implementation was reused; Phase 2 will implement the rule from the paper description if the method conflict is resolved.
+- Rechecked reference [7] from the official NeurIPS paper page/PDF for the ACI update rule. No external ACI implementation was reused; the update rule is implemented locally from the paper description.
+- Phase 2 baselines and matching are original local implementations. No third-party baseline code, copula code, or other reference implementation was copied or imported.
+- Sources: [1] https://arxiv.org/html/2606.18367; [7] https://papers.neurips.cc/paper_files/paper/2021/file/0d441de75945e5acbc865406fc9a2559-Paper.pdf. Chronos runtime and weights are the same already credited above.

@@ -1,0 +1,5 @@
+gamma,calibration_mean_interval_score,method
+0.001,18.53953838650527,ACI native 80% (P10-P90)
+0.005,18.442324695375383,ACI native 80% (P10-P90)
+0.01,18.4903582267249,ACI native 80% (P10-P90)
+0.02,18.95682827736405,ACI native 80% (P10-P90)

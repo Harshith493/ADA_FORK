@@ -1,0 +1,12 @@
+{
+  "phase1_config": "configs/phase1_pems_bay.json",
+  "calibration_cache": "data/cache/phase2_calib_forecasts.npz",
+  "output_dir": "outputs/phase2",
+  "calibration_window_count": 50,
+  "calibration_seed": 2042,
+  "k_grid": [5, 10, 20, 50],
+  "gamma_grid": [0.001, 0.005, 0.01, 0.02],
+  "weight_grid": [0.1, 0.2, 0.3, 0.4, 0.5],
+  "samples": 100,
+  "pilot_queries": 20
+}

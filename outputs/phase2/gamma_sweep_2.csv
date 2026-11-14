@@ -1,0 +1,5 @@
+gamma,calibration_mean_interval_score,method
+0.001,24.33996066264169,"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]"
+0.005,25.430532285192278,"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]"
+0.01,26.199510394918295,"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]"
+0.02,27.67182967704005,"BMA+ACI paper-style weight — our label-free adaptation of BMA, not exact BMA from [1]"

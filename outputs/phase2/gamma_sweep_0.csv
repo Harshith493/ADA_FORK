@@ -1,0 +1,5 @@
+gamma,calibration_mean_interval_score,method
+0.001,29.695307741025147,ACI approximate nominal 90%
+0.005,33.204681268861506,ACI approximate nominal 90%
+0.01,37.45073730145747,ACI approximate nominal 90%
+0.02,48.30663228376482,ACI approximate nominal 90%
