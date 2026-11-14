@@ -19,7 +19,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 ## Completed (commit references)
 
 - Project one-pager and initial handover: `0111ceb64dd664f9a79291f74da6267977594e75`.
-- Phase 0 notes, forecast script, data and plot: commit to be recorded after Phase 0 review artifacts are committed.
+- Phase 0 notes, forecast script, and plot: `3984bbe` (PEMS-BAY CSV and model cache remain local and untracked).
 
 ## Exactly what to do next
 
