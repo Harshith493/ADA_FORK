@@ -1,0 +1,7 @@
+horizon,target_transition_coverage,fork_width,chronos_width,width_reduction,fork_interval_score,chronos_interval_score
+15,0.7,,,,,
+15,0.8,,,,,
+30,0.7,,,,,
+30,0.8,,,,,
+60,0.7,,,,,
+60,0.8,,,,,

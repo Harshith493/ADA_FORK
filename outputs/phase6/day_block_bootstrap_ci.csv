@@ -1,15 +1,15 @@
-method,metric,estimate,ci95_low,ci95_high
-Chronos scaled ACI (p(fork) gate),transition_coverage,0.742967,0.669711,0.828942
-Chronos scaled ACI (p(fork) gate),calm_group_coverage,0.901093,0.871291,0.931506
-Chronos scaled ACI (p(fork) gate),forked_group_coverage,0.891667,0.821734,0.966864
-Chronos scaled ACI (p(fork) gate),transition_width,90.978747,75.343933,109.469261
-Chronos scaled ACI (p(fork) gate),transition_interval_score,159.845783,128.321546,187.831073
-Chronos scaled ACI (p(fork) gate),weighted_median_point_mae,3.891039,2.828307,5.088185
-Chronos scaled ACI (p(fork) gate),chronos_q50_point_mae,4.447617,3.103242,5.875631
-FORK ACI (p(fork)),transition_coverage,0.822251,0.790106,0.863391
-FORK ACI (p(fork)),calm_group_coverage,0.884426,0.856038,0.910287
-FORK ACI (p(fork)),forked_group_coverage,0.892857,0.862192,0.928284
-FORK ACI (p(fork)),transition_width,34.331180,30.776456,36.773419
-FORK ACI (p(fork)),transition_interval_score,58.095937,49.392161,67.408189
-FORK ACI (p(fork)),weighted_median_point_mae,3.891039,2.828307,5.088185
-FORK ACI (p(fork)),chronos_q50_point_mae,4.447617,3.103242,5.875631
+method,metric,subset,estimate,ci95_low,ci95_high
+Chronos scaled ACI (p(fork) gate),transition_coverage,transition windows,0.7429667519181585,0.6697108754418798,0.8289415970678362
+Chronos scaled ACI (p(fork) gate),calm_group_coverage,gate-flagged group,0.9010928961748634,0.8712909088580632,0.9315056431566192
+Chronos scaled ACI (p(fork) gate),forked_group_coverage,gate-flagged group,0.8845238095238095,0.8159002525252526,0.9577911695208197
+Chronos scaled ACI (p(fork) gate),transition_width,transition windows,40.66281106648847,37.52773900055415,43.522298751426696
+Chronos scaled ACI (p(fork) gate),transition_interval_score,transition windows,109.52984680787986,80.00438892134433,137.21559515801735
+Chronos scaled ACI (p(fork) gate),weighted_median_point_mae,all test windows at 60m,3.891039379755656,2.828307131154197,5.088185192573571
+Chronos scaled ACI (p(fork) gate),chronos_q50_point_mae,all test windows at 60m,4.447617223527696,3.103242388521787,5.87563061618085
+FORK ACI (p(fork)),transition_coverage,transition windows,0.8222506393861893,0.790105518602639,0.863390702001408
+FORK ACI (p(fork)),calm_group_coverage,gate-flagged group,0.8844262295081967,0.8560378326530591,0.9102867232646072
+FORK ACI (p(fork)),forked_group_coverage,gate-flagged group,0.8892857142857142,0.8585357557657209,0.9232519053781997
+FORK ACI (p(fork)),transition_width,transition windows,34.15187094644512,30.589777573674727,36.526053341752935
+FORK ACI (p(fork)),transition_interval_score,transition windows,57.91662804427964,49.18260968020154,67.27483663247575
+FORK ACI (p(fork)),weighted_median_point_mae,all test windows at 60m,3.891039379755656,2.828307131154197,5.088185192573571
+FORK ACI (p(fork)),chronos_q50_point_mae,all test windows at 60m,4.447617223527696,3.103242388521787,5.87563061618085

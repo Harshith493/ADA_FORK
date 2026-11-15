@@ -1,0 +1,4 @@
+horizon,target_calm_coverage,fork_width,chronos_width,width_reduction,fork_interval_score,chronos_interval_score
+15,0.9,8.685959289802037,,,10.604144792897127,
+30,0.9,10.118735525335802,,,12.235610034530511,
+60,0.9,12.753636491679153,,,15.07919544459287,

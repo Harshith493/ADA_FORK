@@ -20,7 +20,7 @@ The Phase 6 headline table includes transition coverage, calm/forked group cover
 
 ## Matched-coverage sharpness
 
-Use `outputs/phase6/matched_coverage.csv` and `matched_calm_coverage.csv`; values must be regenerated after clipping. Interpolation is limited to coverage ranges observed for both methods. Before clipping, at 60m and matched 70% transition coverage, FORK width was 27.54 mph vs Chronos scaled ACI 74.64 mph (63.1% lower), interval scores 43.29 vs 141.14. At 80%, the curves did not overlap because Chronos topped out at 78.4%. This is the **before-clipping** reference only; do not present it as the final A1 result.
+Sharpness at matched coverage: not established. The matched-coverage files could not be verified after clipping. In the clipped Phase 6 headline table, FORK reached higher transition coverage (82.2%, CI 79.0 to 86.3) than Chronos scaled ACI (74.3%, CI 67.0 to 82.9) at a lower mean 60-minute transition width (34.2 vs 40.7 mph). The CIs overlap, so this is suggestive, not proven. The earlier 63% figure came from unclipped Chronos intervals and is not used.
 
 ## Phase summaries (10 lines maximum each)
 
@@ -106,6 +106,6 @@ Use `outputs/phase6/matched_coverage.csv` and `matched_calm_coverage.csv`; value
 
 ## Claims allowed / claims not allowed
 
-**Allowed:** report the measured fixed-sample Phase 6 clipped estimates and their day-block CIs; say FORK's 60m 70%-matched transition interval is sharper if the clipped rerun retains that result; say the 80% comparison is unavailable when curves do not overlap; report the 30% branch-odds bin result and Brier score.
+**Allowed:** report the measured fixed-sample Phase 6 clipped estimates and their day-block CIs; say that FORK reached higher transition coverage (82.2%) than Chronos scaled ACI (74.3%) at a lower mean 60-minute transition width (34.2 vs 40.7 mph) and a lower interval score (57.9 vs 109.5), noting that the coverage and width CIs overlap, so this is suggestive, not proven; say that sharpness at matched coverage is not established because the matched-coverage files could not be verified after clipping; report the 30% branch-odds bin result and Brier score.
 
 **Not allowed:** call p(fork) a calibrated fork probability; claim transition coverage reaches 85% based only on a CI spanning 85%; claim a 90% whole-path guarantee; call our BMA adaptation exact BMA; claim post-cutoff validation, cross-sensor coupling, multi-model transfer, METR-LA/Caltrans/fev-bench/GIFT-Eval results, or an oracle branch construction result.
