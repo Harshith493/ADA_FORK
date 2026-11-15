@@ -1,17 +1,20 @@
-method,flag_group,path_n,whole_path_coverage
-Chronos ACI (no gate),all,4500,0.435556
-Chronos ACI (p(fork)),calm-flagged,3660,0.489891
-Chronos ACI (p(fork)),forked-flagged,840,0.198810
-FORK ACI (branch-weight),calm-flagged,249,0.485944
-FORK ACI (branch-weight),forked-flagged,4251,0.673253
-FORK ACI (no gate),all,4500,0.662889
-FORK ACI (oracle reference),calm-flagged,3718,0.679398
-FORK ACI (oracle reference),forked-flagged,782,0.584399
-FORK ACI (p(fork)),calm-flagged,3660,0.662568
-FORK ACI (p(fork)),forked-flagged,840,0.664286
-"FORK ACI (p(fork), calm collapse)",calm-flagged,3660,0.482514
-"FORK ACI (p(fork), calm collapse)",forked-flagged,840,0.664286
-FORK ACI (random),calm-flagged,3783,0.665874
-FORK ACI (random),forked-flagged,717,0.647141
-FORK ACI (recent-drop),calm-flagged,3702,0.658563
-FORK ACI (recent-drop),forked-flagged,798,0.682957
+method,flag_group,path_n,whole_path_region_coverage,joint_12_interval_coverage
+"Chronos ACI (capped, not a valid baseline; no gate)",all,4500,0.435556,0.435556
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,3660,0.489891,0.489891
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,840,0.198810,0.198810
+Chronos scaled ACI (no gate),all,4500,0.897778,0.697333
+Chronos scaled ACI (p(fork) gate),calm-flagged,3660,0.895082,0.631148
+Chronos scaled ACI (p(fork) gate),forked-flagged,840,0.895238,0.757143
+FORK ACI (branch-weight),calm-flagged,249,0.485944,0.485944
+FORK ACI (branch-weight),forked-flagged,4251,0.673253,0.595154
+FORK ACI (no gate),all,4500,0.662889,0.603556
+FORK ACI (oracle reference),calm-flagged,3718,0.679398,0.565627
+FORK ACI (oracle reference),forked-flagged,782,0.584399,0.570332
+FORK ACI (p(fork)),calm-flagged,3660,0.662568,0.578415
+FORK ACI (p(fork)),forked-flagged,840,0.664286,0.598810
+"FORK ACI (p(fork), calm collapse)",calm-flagged,3660,0.482514,0.482514
+"FORK ACI (p(fork), calm collapse)",forked-flagged,840,0.664286,0.626190
+FORK ACI (random),calm-flagged,3783,0.665874,0.609833
+FORK ACI (random),forked-flagged,717,0.647141,0.584379
+FORK ACI (recent-drop),calm-flagged,3702,0.658563,0.590492
+FORK ACI (recent-drop),forked-flagged,798,0.682957,0.640351

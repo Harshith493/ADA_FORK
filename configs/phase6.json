@@ -1,0 +1,11 @@
+{
+  "phase5_config": "configs/phase5_pems_bay.json",
+  "alpha_targets": [0.3, 0.2, 0.1, 0.05],
+  "matched_transition_coverages": [0.7, 0.8],
+  "matched_calm_coverage": 0.9,
+  "bootstrap_resamples": 1000,
+  "bootstrap_seed": 6060,
+  "minority_reliability_bins": 5,
+  "score_seed": 6060,
+  "output_dir": "outputs/phase6"
+}

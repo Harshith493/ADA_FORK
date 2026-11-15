@@ -1,0 +1,9 @@
+alpha,method,gamma
+0.3,FORK ACI (p(fork)),0.001
+0.3,Chronos scaled ACI (p(fork) gate),0.001
+0.2,FORK ACI (p(fork)),0.001
+0.2,Chronos scaled ACI (p(fork) gate),0.001
+0.1,FORK ACI (p(fork)),0.01
+0.1,Chronos scaled ACI (p(fork) gate),0.001
+0.05,FORK ACI (p(fork)),0.001
+0.05,Chronos scaled ACI (p(fork) gate),0.01

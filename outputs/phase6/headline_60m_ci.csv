@@ -1,0 +1,3 @@
+method,transition_coverage,transition_coverage_ci95,calm_group_coverage,calm_group_ci95,forked_group_coverage,forked_group_ci95,transition_mean_width_mph,width_ci95,transition_interval_score,interval_score_ci95,point_mae,mae_ci95
+FORK ACI (p(fork)),0.822251,0.790-0.863,0.884426,0.856-0.910,0.892857,0.862-0.928,34.331181,30.78-36.77,58.095937,49.39-67.41,3.891039,2.83-5.09
+Chronos scaled ACI (p(fork) gate),0.742967,0.670-0.829,0.901093,0.871-0.932,0.891667,0.822-0.967,90.978737,75.34-109.47,159.845783,128.32-187.83,4.447617,3.10-5.88

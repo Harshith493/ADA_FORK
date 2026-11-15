@@ -1,0 +1,15 @@
+method,metric,estimate,ci95_low,ci95_high
+Chronos scaled ACI (p(fork) gate),transition_coverage,0.742967,0.669711,0.828942
+Chronos scaled ACI (p(fork) gate),calm_group_coverage,0.901093,0.871291,0.931506
+Chronos scaled ACI (p(fork) gate),forked_group_coverage,0.891667,0.821734,0.966864
+Chronos scaled ACI (p(fork) gate),transition_width,90.978747,75.343933,109.469261
+Chronos scaled ACI (p(fork) gate),transition_interval_score,159.845783,128.321546,187.831073
+Chronos scaled ACI (p(fork) gate),weighted_median_point_mae,3.891039,2.828307,5.088185
+Chronos scaled ACI (p(fork) gate),chronos_q50_point_mae,4.447617,3.103242,5.875631
+FORK ACI (p(fork)),transition_coverage,0.822251,0.790106,0.863391
+FORK ACI (p(fork)),calm_group_coverage,0.884426,0.856038,0.910287
+FORK ACI (p(fork)),forked_group_coverage,0.892857,0.862192,0.928284
+FORK ACI (p(fork)),transition_width,34.331180,30.776456,36.773419
+FORK ACI (p(fork)),transition_interval_score,58.095937,49.392161,67.408189
+FORK ACI (p(fork)),weighted_median_point_mae,3.891039,2.828307,5.088185
+FORK ACI (p(fork)),chronos_q50_point_mae,4.447617,3.103242,5.875631

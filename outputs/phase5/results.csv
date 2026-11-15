@@ -1,31 +1,58 @@
 method,flag_group,regime,horizon_minutes,n,coverage,mean_width_mph,interval_score
-Chronos ACI (no gate),all,congested,15,429.000000,0.911422,12.695713,19.937030
-Chronos ACI (no gate),all,congested,30,378.000000,0.923280,16.649277,21.844199
-Chronos ACI (no gate),all,congested,60,301.000000,0.897010,22.884893,29.014853
-Chronos ACI (no gate),all,free-flow,15,3626.000000,0.841975,4.823627,7.107804
-Chronos ACI (no gate),all,free-flow,30,3547.000000,0.829997,6.106969,9.642013
-Chronos ACI (no gate),all,free-flow,60,3417.000000,0.815628,8.363443,13.207855
-Chronos ACI (no gate),all,transition,15,445.000000,0.600000,13.021609,91.415658
-Chronos ACI (no gate),all,transition,30,575.000000,0.526957,15.491230,146.923489
-Chronos ACI (no gate),all,transition,60,782.000000,0.438619,18.261147,220.462652
-Chronos ACI (p(fork)),calm-flagged,congested,15,313.000000,0.907348,13.753749,22.095092
-Chronos ACI (p(fork)),calm-flagged,congested,30,278.000000,0.924460,17.803566,23.922429
-Chronos ACI (p(fork)),calm-flagged,congested,60,243.000000,0.901235,24.041479,29.809251
-Chronos ACI (p(fork)),calm-flagged,free-flow,15,3107.000000,0.857741,5.025497,6.710330
-Chronos ACI (p(fork)),calm-flagged,free-flow,30,3073.000000,0.859095,6.401511,8.617714
-Chronos ACI (p(fork)),calm-flagged,free-flow,60,3016.000000,0.843170,8.809187,11.776558
-Chronos ACI (p(fork)),calm-flagged,transition,15,240.000000,0.733333,14.636819,44.383340
-Chronos ACI (p(fork)),calm-flagged,transition,30,309.000000,0.737864,17.689819,69.110786
-Chronos ACI (p(fork)),calm-flagged,transition,60,401.000000,0.678304,21.747992,95.843188
-Chronos ACI (p(fork)),forked-flagged,congested,15,116.000000,0.922414,9.840838,14.113984
-Chronos ACI (p(fork)),forked-flagged,congested,30,100.000000,0.910000,12.852168,16.079171
-Chronos ACI (p(fork)),forked-flagged,congested,60,58.000000,0.879310,18.039198,25.686599
-Chronos ACI (p(fork)),forked-flagged,free-flow,15,519.000000,0.747592,3.615133,9.487283
-Chronos ACI (p(fork)),forked-flagged,free-flow,30,474.000000,0.641350,4.156459,16.316188
-Chronos ACI (p(fork)),forked-flagged,free-flow,60,401.000000,0.608479,5.010915,23.972921
-Chronos ACI (p(fork)),forked-flagged,transition,15,205.000000,0.443902,11.130633,146.477885
-Chronos ACI (p(fork)),forked-flagged,transition,30,266.000000,0.281955,12.851497,237.756487
-Chronos ACI (p(fork)),forked-flagged,transition,60,381.000000,0.186352,14.591264,351.623821
+"Chronos ACI (capped, not a valid baseline; no gate)",all,congested,15,429.000000,0.911422,12.695713,19.937030
+"Chronos ACI (capped, not a valid baseline; no gate)",all,congested,30,378.000000,0.923280,16.649277,21.844199
+"Chronos ACI (capped, not a valid baseline; no gate)",all,congested,60,301.000000,0.897010,22.884893,29.014853
+"Chronos ACI (capped, not a valid baseline; no gate)",all,free-flow,15,3626.000000,0.841975,4.823627,7.107804
+"Chronos ACI (capped, not a valid baseline; no gate)",all,free-flow,30,3547.000000,0.829997,6.106969,9.642013
+"Chronos ACI (capped, not a valid baseline; no gate)",all,free-flow,60,3417.000000,0.815628,8.363443,13.207855
+"Chronos ACI (capped, not a valid baseline; no gate)",all,transition,15,445.000000,0.600000,13.021609,91.415658
+"Chronos ACI (capped, not a valid baseline; no gate)",all,transition,30,575.000000,0.526957,15.491230,146.923489
+"Chronos ACI (capped, not a valid baseline; no gate)",all,transition,60,782.000000,0.438619,18.261147,220.462652
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,congested,15,313.000000,0.907348,13.753749,22.095092
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,congested,30,278.000000,0.928058,18.015144,23.917951
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,congested,60,243.000000,0.901235,24.041479,29.809251
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,free-flow,15,3107.000000,0.857741,5.025497,6.710330
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,free-flow,30,3073.000000,0.859095,6.407828,8.612544
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,free-flow,60,3016.000000,0.843170,8.809187,11.776558
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,transition,15,240.000000,0.733333,14.636819,44.383340
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,transition,30,309.000000,0.737864,17.763620,68.730681
+"Chronos ACI (capped, not a valid baseline; p(fork))",calm-flagged,transition,60,401.000000,0.678304,21.747992,95.843188
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,congested,15,116.000000,0.922414,9.840838,14.113984
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,congested,30,100.000000,0.910000,12.852168,16.079171
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,congested,60,58.000000,0.879310,18.039198,25.686599
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,free-flow,15,519.000000,0.747592,3.615133,9.487283
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,free-flow,30,474.000000,0.641350,4.156459,16.316188
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,free-flow,60,401.000000,0.608479,5.010915,23.972921
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,transition,15,205.000000,0.443902,11.130633,146.477885
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,transition,30,266.000000,0.281955,12.851497,237.756487
+"Chronos ACI (capped, not a valid baseline; p(fork))",forked-flagged,transition,60,381.000000,0.186352,14.591264,351.623821
+Chronos scaled ACI (no gate),all,congested,15,429.000000,0.941725,16.820005,22.396602
+Chronos scaled ACI (no gate),all,congested,30,378.000000,0.970899,24.297630,27.017639
+Chronos scaled ACI (no gate),all,congested,60,301.000000,0.976744,45.815315,46.635607
+Chronos scaled ACI (no gate),all,free-flow,15,3626.000000,0.928020,6.464192,7.608396
+Chronos scaled ACI (no gate),all,free-flow,30,3547.000000,0.931491,9.093906,10.882993
+Chronos scaled ACI (no gate),all,free-flow,60,3417.000000,0.964881,17.577063,18.775770
+Chronos scaled ACI (no gate),all,transition,15,445.000000,0.678652,17.144138,86.548727
+Chronos scaled ACI (no gate),all,transition,30,575.000000,0.638261,22.458372,137.965013
+Chronos scaled ACI (no gate),all,transition,60,782.000000,0.589514,35.898697,197.842060
+Chronos scaled ACI (p(fork) gate),calm-flagged,congested,15,313.000000,0.936102,15.892936,24.108954
+Chronos scaled ACI (p(fork) gate),calm-flagged,congested,30,278.000000,0.967626,19.380354,24.546476
+Chronos scaled ACI (p(fork) gate),calm-flagged,congested,60,243.000000,0.983539,27.550566,28.141923
+Chronos scaled ACI (p(fork) gate),calm-flagged,free-flow,15,3107.000000,0.911812,5.906747,6.921572
+Chronos scaled ACI (p(fork) gate),calm-flagged,free-flow,30,3073.000000,0.900423,7.132620,8.722548
+Chronos scaled ACI (p(fork) gate),calm-flagged,free-flow,60,3016.000000,0.917772,10.416605,12.166865
+Chronos scaled ACI (p(fork) gate),calm-flagged,transition,15,240.000000,0.775000,17.057123,43.744726
+Chronos scaled ACI (p(fork) gate),calm-flagged,transition,30,309.000000,0.773463,19.219196,71.880531
+Chronos scaled ACI (p(fork) gate),calm-flagged,transition,60,401.000000,0.725686,25.157297,98.838164
+Chronos scaled ACI (p(fork) gate),forked-flagged,congested,15,116.000000,1.000000,29.524767,29.524764
+Chronos scaled ACI (p(fork) gate),forked-flagged,congested,30,100.000000,1.000000,70.814095,70.814093
+Chronos scaled ACI (p(fork) gate),forked-flagged,congested,60,58.000000,1.000000,200.461807,200.461805
+Chronos scaled ACI (p(fork) gate),forked-flagged,free-flow,15,519.000000,0.986513,10.501982,11.210396
+Chronos scaled ACI (p(fork) gate),forked-flagged,free-flow,30,474.000000,0.985232,21.988329,22.305721
+Chronos scaled ACI (p(fork) gate),forked-flagged,free-flow,60,401.000000,1.000000,53.949013,53.949017
+Chronos scaled ACI (p(fork) gate),forked-flagged,transition,15,205.000000,0.702439,32.285198,121.057088
+Chronos scaled ACI (p(fork) gate),forked-flagged,transition,30,266.000000,0.699248,68.670166,164.829406
+Chronos scaled ACI (p(fork) gate),forked-flagged,transition,60,381.000000,0.761155,160.255386,224.055903
 FORK ACI (branch-weight),calm-flagged,congested,15,25.000000,1.000000,14.043888,14.043887
 FORK ACI (branch-weight),calm-flagged,congested,30,23.000000,0.913043,19.716402,20.401904
 FORK ACI (branch-weight),calm-flagged,congested,60,22.000000,1.000000,26.912498,26.912497
@@ -85,23 +112,23 @@ FORK ACI (p(fork)),forked-flagged,transition,15,205.000000,0.848780,27.957941,41
 FORK ACI (p(fork)),forked-flagged,transition,30,266.000000,0.853383,34.091644,48.270956
 FORK ACI (p(fork)),forked-flagged,transition,60,381.000000,0.855643,40.486656,54.164861
 "FORK ACI (p(fork), calm collapse)",calm-flagged,congested,15,313.000000,0.904153,13.696861,22.146831
-"FORK ACI (p(fork), calm collapse)",calm-flagged,congested,30,278.000000,0.928058,17.877325,23.780132
+"FORK ACI (p(fork), calm collapse)",calm-flagged,congested,30,278.000000,0.928058,17.925676,23.828484
 "FORK ACI (p(fork), calm collapse)",calm-flagged,congested,60,243.000000,0.901235,23.901632,29.669403
 "FORK ACI (p(fork), calm collapse)",calm-flagged,free-flow,15,3107.000000,0.852269,4.981450,6.805324
-"FORK ACI (p(fork), calm collapse)",calm-flagged,free-flow,30,3073.000000,0.853238,6.326234,8.711027
+"FORK ACI (p(fork), calm collapse)",calm-flagged,free-flow,30,3073.000000,0.853238,6.327859,8.710933
 "FORK ACI (p(fork), calm collapse)",calm-flagged,free-flow,60,3016.000000,0.841844,8.672268,11.700643
 "FORK ACI (p(fork), calm collapse)",calm-flagged,transition,15,240.000000,0.729167,14.590876,44.587396
-"FORK ACI (p(fork), calm collapse)",calm-flagged,transition,30,309.000000,0.747573,17.688057,67.521356
+"FORK ACI (p(fork), calm collapse)",calm-flagged,transition,30,309.000000,0.747573,17.702751,67.416647
 "FORK ACI (p(fork), calm collapse)",calm-flagged,transition,60,401.000000,0.685786,21.653429,95.412360
-"FORK ACI (p(fork), calm collapse)",forked-flagged,congested,15,116.000000,0.974138,31.409100,32.662494
-"FORK ACI (p(fork), calm collapse)",forked-flagged,congested,30,100.000000,0.940000,41.253799,42.378420
-"FORK ACI (p(fork), calm collapse)",forked-flagged,congested,60,58.000000,1.000000,49.314968,49.314963
-"FORK ACI (p(fork), calm collapse)",forked-flagged,free-flow,15,519.000000,0.909441,12.914596,13.623147
-"FORK ACI (p(fork), calm collapse)",forked-flagged,free-flow,30,474.000000,0.900844,15.036586,16.587055
-"FORK ACI (p(fork), calm collapse)",forked-flagged,free-flow,60,401.000000,0.915212,18.046755,21.712751
-"FORK ACI (p(fork), calm collapse)",forked-flagged,transition,15,205.000000,0.858537,28.849985,41.124021
-"FORK ACI (p(fork), calm collapse)",forked-flagged,transition,30,266.000000,0.857143,34.560936,47.875964
-"FORK ACI (p(fork), calm collapse)",forked-flagged,transition,60,381.000000,0.868766,40.524738,54.073611
+"FORK ACI (p(fork), calm collapse)",forked-flagged,congested,15,116.000000,0.974138,31.550879,32.804273
+"FORK ACI (p(fork), calm collapse)",forked-flagged,congested,30,100.000000,0.940000,41.341110,42.449549
+"FORK ACI (p(fork), calm collapse)",forked-flagged,congested,60,58.000000,1.000000,49.349533,49.349534
+"FORK ACI (p(fork), calm collapse)",forked-flagged,free-flow,15,519.000000,0.926782,12.999486,13.552942
+"FORK ACI (p(fork), calm collapse)",forked-flagged,free-flow,30,474.000000,0.896624,15.157974,16.687461
+"FORK ACI (p(fork), calm collapse)",forked-flagged,free-flow,60,401.000000,0.915212,18.037153,21.689674
+"FORK ACI (p(fork), calm collapse)",forked-flagged,transition,15,205.000000,0.853659,28.660990,41.113542
+"FORK ACI (p(fork), calm collapse)",forked-flagged,transition,30,266.000000,0.860902,34.549660,48.042487
+"FORK ACI (p(fork), calm collapse)",forked-flagged,transition,60,381.000000,0.866142,40.597942,54.095382
 FORK ACI (random),calm-flagged,congested,15,369.000000,0.945799,22.010368,29.717858
 FORK ACI (random),calm-flagged,congested,30,321.000000,0.887850,27.825819,35.038154
 FORK ACI (random),calm-flagged,congested,60,255.000000,0.917647,36.249123,40.643311

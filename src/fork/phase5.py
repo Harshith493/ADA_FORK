@@ -4,6 +4,20 @@ import heapq
 import math
 import numpy as np
 
+def scaled_chronos_scores(quantiles, actual, epsilon=1e-3):
+    q=np.asarray(quantiles,dtype=float); y=np.asarray(actual,dtype=float)
+    if q.ndim!=2 or y.shape!=(q.shape[0],) or q.shape[1]<5 or epsilon<=0:
+        raise ValueError('expected [horizon, >=5 quantiles], matching actual path, and positive epsilon')
+    half=np.maximum((q[:,4]-q[:,0])/2,epsilon)
+    return np.abs(y-q[:,2])/half
+
+def scaled_chronos_bounds(quantiles, level, epsilon=1e-3):
+    q=np.asarray(quantiles,dtype=float)
+    if q.ndim!=2 or q.shape[1]<5 or level<0 or epsilon<=0:
+        raise ValueError('invalid Chronos scaled interval inputs')
+    half=np.maximum((q[:,4]-q[:,0])/2,epsilon)
+    return q[:,2]-level*half,q[:,2]+level*half
+
 def _quantile_sorted(x, q):
     if len(x)==1: return float(x[0])
     pos=float(np.clip(q,0.,1.))*(len(x)-1); i=int(pos); f=pos-i

@@ -1,0 +1,11 @@
+{
+  "phase1_config": "configs/phase1_pems_bay.json",
+  "phase5_config": "configs/phase5_pems_bay.json",
+  "stride_origins": 6,
+  "sensor_count": 30,
+  "seed": 6060,
+  "estimated_sample_run_minutes": 7.2,
+  "estimated_full_run_minutes": 90,
+  "cache_dir": "data/cache/phase6_scaled",
+  "output_dir": "outputs/phase6_scaled"
+}

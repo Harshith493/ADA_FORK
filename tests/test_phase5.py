@@ -4,7 +4,7 @@ import ast, sys, unittest
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT/'src'))
 from fork.phase5 import (ConformalState,MaturityQueue,branch_bounds,
-    branch_nonconformity,finite_sample_level)
+    branch_nonconformity,finite_sample_level,scaled_chronos_scores,scaled_chronos_bounds)
 
 class Phase5Tests(unittest.TestCase):
     def test_branch_score_and_full_support_cap(self):
@@ -52,5 +52,21 @@ class Phase5Tests(unittest.TestCase):
         imports=[ast.unparse(n) for n in ast.walk(tree) if isinstance(n,(ast.Import,ast.ImportFrom))]
         self.assertFalse(any('phase1' in x or 'label_target_period' in x for x in imports))
         self.assertNotIn('label_target_period',source)
+
+    def test_scaled_chronos_score_is_uncapped_and_interval_expands(self):
+        q=np.tile(np.array([10.,12.,15.,18.,20.]),(12,1)); y=np.full(12,100.)
+        score=scaled_chronos_scores(q,y)
+        self.assertGreater(float(score.max()),1.)
+        lo,hi=scaled_chronos_bounds(q,float(score.max()))
+        self.assertTrue(np.all(y>=lo)&np.all(y<=hi))
+
+    def test_max_score_region_converges_on_random_stream(self):
+        rng=np.random.default_rng(419); state=ConformalState(1,.1); queue=MaturityQueue(); hits=[]
+        for t in range(16000):
+            queue.mature(t,state,.01)
+            score=float(np.max(rng.uniform(size=12)))
+            tau=state.level(0,0,.1); miss=score>tau
+            hits.append(not miss); queue.push(t+1,0,0,score,int(miss))
+        self.assertLess(abs(float(np.mean(hits[-12000:]))-.9),.025)
 
 if __name__=='__main__': unittest.main()

@@ -12,10 +12,10 @@ from fork.phase2 import interval_score
 from fork.phase3 import calendar_features
 from fork.phase4 import corr_from_residuals,sample_branch_paths
 from fork.phase5 import (ConformalState,MaturityQueue,branch_nonconformity,
-    branch_bounds,central_bounds_at)
+    branch_bounds,central_bounds_at,scaled_chronos_scores,scaled_chronos_bounds)
 from fork.window_matching import WindowMatcher
 
-HORIZONS=(2,5,11); STEPS=(3,6,12); STREAMS=4
+HORIZONS=(2,5,11); STEPS=(3,6,12); STREAMS=13
 
 def make_calibration_branches(values,columns,timestamps,train_end,sensors,origins,qs,p1,p3,seed,pooled):
     context=p1['context_steps']; train_origins=np.arange(context,train_end-12+1)
@@ -60,19 +60,20 @@ def finite_level(scores,alpha,target):
     n=len(scores); rank=min(n,max(1,int(np.ceil((n+1)*(1-alpha)))))
     return float(np.partition(np.asarray(scores),rank-1)[rank-1])
 
-def simulate(origins,groups,actual,branch_paths,branch_counts,branch_weights,anchors,chron_paths,
-             fork_scores,calm_scores,chron_scores,gate,kind,gamma,cfg,collect=True):
+def simulate(origins,groups,actual,branch_paths,branch_counts,branch_weights,anchors,chron_paths,quantiles,
+             fork_scores,calm_scores,chron_scores,scaled_scores,gate,kind,gamma,cfg,collect=True):
     n=len(origins); order=np.lexsort((np.arange(n),origins)); state=ConformalState(STREAMS,cfg['target_alpha']); pending=MaturityQueue()
-    tau_out=np.zeros((n,STREAMS),np.float32); alpha_out=np.zeros((n,STREAMS),np.float32); low=np.zeros((n,3),np.float32); high=np.zeros_like(low); path_low=np.zeros((n,12),np.float32); path_high=np.zeros_like(path_low); group_out=np.zeros(n,np.int8)
+    tau_out=np.zeros((n,STREAMS),np.float32); alpha_out=np.zeros((n,STREAMS),np.float32); low=np.zeros((n,12),np.float32); high=np.zeros_like(low); path_low=np.zeros((n,12),np.float32); path_high=np.zeros_like(path_low); group_out=np.zeros(n,np.int8)
     def observe(i,stream,bounds):
         if kind=='chronos': scores=chron_scores
+        elif kind=='chronos_scaled': scores=scaled_scores
         elif kind=='fork_collapse' and int(gate[i])==0: scores=calm_scores
         else: scores=fork_scores
-        score=float(np.max(scores[i])) if stream==3 else float(scores[i,HORIZONS[stream]])
-        if stream==3:
+        score=float(np.max(scores[i])) if stream==12 else float(scores[i,stream])
+        if stream==12:
             y=actual[i]; lo_path,hi_path=bounds; miss=bool(np.any((y<lo_path)|(y>hi_path)))
         else:
-            y=float(actual[i,HORIZONS[stream]]); lo_i,hi_i=bounds; miss=bool(y<lo_i or y>hi_i)
+            y=float(actual[i,stream]); lo_i,hi_i=bounds; miss=bool(y<lo_i or y>hi_i)
         return score,miss
     for i in order:
         o=int(origins[i]); pending.mature(o,state,gamma,cfg['target_alpha'],tuple(cfg['alpha_clip']),observe)
@@ -82,27 +83,31 @@ def simulate(origins,groups,actual,branch_paths,branch_counts,branch_weights,anc
         use_weights=w if collapse else branch_weights[i]
         use_counts=branch_counts[i]
         paths=branch_paths[i]
-        if kind=='chronos': paths0=chron_paths[i][None,:,:]; counts0=np.array([200]); weights0=np.array([1.]); paths0_sorted=True
+        if kind in ('chronos','chronos_scaled'): paths0=chron_paths[i][None,:,:]; counts0=np.array([200]); weights0=np.array([1.]); paths0_sorted=True
         else: paths0=paths; counts0=use_counts; weights0=use_weights; paths0_sorted=True
         for stream in range(STREAMS):
             alpha_now=state._group(g)['alpha'][stream]; tau=state.level(g,stream,cfg['target_alpha'])
             tau_out[i,stream]=tau; alpha_out[i,stream]=alpha_now
-            if stream<3:
-                h=HORIZONS[stream]
-                lo,hi=central_bounds_at(paths0,counts0,weights0,h,tau,cfg['branch_drop_threshold'],paths0_sorted)
-                low[i,stream]=lo; high[i,stream]=hi
-                maturity=o+STEPS[stream]
+            if stream<12:
+                h=stream
+                if kind=='chronos_scaled':
+                    lo0,hi0=scaled_chronos_bounds(quantiles[i],tau); lo=float(lo0[h]); hi=float(hi0[h])
+                else: lo,hi=central_bounds_at(paths0,counts0,weights0,h,tau,cfg['branch_drop_threshold'],paths0_sorted)
+                low[i,h]=lo; high[i,h]=hi; maturity=o+h+1
             else:
-                lo_path,hi_path=branch_bounds(paths0,counts0,weights0,tau,cfg['branch_drop_threshold'],paths0_sorted)
+                if kind=='chronos_scaled':
+                    lo_path,hi_path=scaled_chronos_bounds(quantiles[i],tau)
+                else: lo_path,hi_path=branch_bounds(paths0,counts0,weights0,tau,cfg['branch_drop_threshold'],paths0_sorted)
                 path_low[i]=lo_path; path_high[i]=hi_path
                 maturity=o+12
-            pending.push(maturity,g,stream,reference=int(i),bounds=(lo_path,hi_path) if stream==3 else (lo,hi))
+            pending.push(maturity,g,stream,reference=int(i),bounds=(lo_path,hi_path) if stream==12 else (lo,hi))
     path_covered=np.all((actual>=path_low)&(actual<=path_high),axis=1)
-    return {'tau':tau_out,'alpha':alpha_out,'lower':low,'upper':high,'path_covered':path_covered,'group':group_out,'score':tau_out}
+    joint_covered=np.all((actual>=low)&(actual<=high),axis=1)
+    return {'tau':tau_out,'alpha':alpha_out,'lower':low,'upper':high,'path_covered':path_covered,'joint_covered':joint_covered,'group':group_out,'score':tau_out}
 
-def objective(result,actual):
+def objective(result,actual,alpha=.1):
     losses=[]
-    for j,h in enumerate(HORIZONS): losses.extend(interval_score(actual[:,h],result['lower'][:,j],result['upper'][:,j],.1).tolist())
+    for h in HORIZONS: losses.extend(interval_score(actual[:,h],result['lower'][:,h],result['upper'][:,h],alpha).tolist())
     return float(np.mean(losses))
 
 def make_labels(actual,p1):
@@ -177,6 +182,7 @@ def main():
     calm_scores=score_paths(fork_sorted,fork_counts,calm_weights,ys,cfg['branch_drop_threshold'],cfg['score_bisection_steps'])
     chron_paths=np.stack([sample_chronos(q,cfg['seed']+i) for i,q in enumerate(qs)]); chron_sorted=np.sort(chron_paths,axis=1)
     chron_scores=np.stack([branch_nonconformity(chron_sorted[i][None,:,:],[200],[1.],ys[i],cfg['branch_drop_threshold'],cfg['score_bisection_steps'],True) for i in range(len(ys))])
+    scaled_scores=np.stack([scaled_chronos_scores(q,y) for q,y in zip(qs,ys)]).astype(np.float32)
     print(f'Score arrays ready in {(time.perf_counter()-t0)/60:.1f} min.',flush=True)
     # Gate choices are label-free apart from the isolated oracle reference.
     with np.load(ROOT/p3['feature_cache'],allow_pickle=False) as z: cal_base=z['cal_base']; test_base=z['test_base']
@@ -191,13 +197,12 @@ def main():
     labels=make_labels(ys,p1); oracle_flags=(labels=='transition')
     gates={'p(fork)':pflags,'recent-drop':recent_flags,'branch-weight':branch_flags,'random':random_flags,'no-gate':np.zeros(len(ys),bool),'oracle (reference only)':oracle_flags}
     pd.DataFrame([{'gate':name,'calibration_flag_rate':float(np.mean(flag[:ncal])),'test_flag_rate':float(np.mean(flag[ncal:])),'threshold':(.168745 if name=='p(fork)' else recent_thr if name=='recent-drop' else np.nan),'oracle_uses_labels':name=='oracle (reference only)'} for name,flag in gates.items()]).to_csv(out/'gate_summary.csv',index=False,float_format='%.6f')
-    specs=[('FORK ACI (p(fork))','fork','p(fork)'),('FORK ACI (recent-drop)','fork','recent-drop'),('FORK ACI (branch-weight)','fork','branch-weight'),('FORK ACI (random)','fork','random'),('FORK ACI (no gate)','no_gate','no-gate'),('FORK ACI (oracle reference)','fork','oracle (reference only)'),('FORK ACI (p(fork), calm collapse)','fork_collapse','p(fork)'),('Chronos ACI (no gate)','chronos','no-gate'),('Chronos ACI (p(fork))','chronos','p(fork)')]
+    specs=[('FORK ACI (p(fork))','fork','p(fork)'),('FORK ACI (recent-drop)','fork','recent-drop'),('FORK ACI (branch-weight)','fork','branch-weight'),('FORK ACI (random)','fork','random'),('FORK ACI (no gate)','no_gate','no-gate'),('FORK ACI (oracle reference)','fork','oracle (reference only)'),('FORK ACI (p(fork), calm collapse)','fork_collapse','p(fork)'),('Chronos ACI (capped, not a valid baseline; no gate)','chronos','no-gate'),('Chronos ACI (capped, not a valid baseline; p(fork))','chronos','p(fork)'),('Chronos scaled ACI (no gate)','chronos_scaled','no-gate'),('Chronos scaled ACI (p(fork) gate)','chronos_scaled','p(fork)')]
     choices={}; sweep=[]
     for name,kind,gate_name in specs:
         if 'oracle' in name: continue
-        scores_for=calm_scores if kind=='fork_collapse' else (fork_scores if kind=='fork' else chron_scores)
         for gamma in cfg['gamma_grid']:
-            sim=simulate(origins[:ncal],seedgroups[:ncal],ys[:ncal],fork_sorted[:ncal],fork_counts[:ncal],fork_weights[:ncal],anchor[:ncal],chron_sorted[:ncal],fork_scores[:ncal],calm_scores[:ncal],chron_scores[:ncal],gates[gate_name][:ncal],kind,gamma,cfg)
+            sim=simulate(origins[:ncal],seedgroups[:ncal],ys[:ncal],fork_sorted[:ncal],fork_counts[:ncal],fork_weights[:ncal],anchor[:ncal],chron_sorted[:ncal],cal_q,fork_scores[:ncal],calm_scores[:ncal],chron_scores[:ncal],scaled_scores[:ncal],gates[gate_name][:ncal],kind,gamma,cfg)
             val=objective(sim,ys[:ncal]); sweep.append({'method':name,'gamma':gamma,'calibration_interval_score':val})
         best=min((r for r in sweep if r['method']==name),key=lambda r:(r['calibration_interval_score'],r['gamma']))
         choices[name]=float(best['gamma'])
@@ -207,10 +212,10 @@ def main():
     result_by_method={}; alpha_rows=[]
     for name,kind,gate_name in specs:
         gamma=choices[name]
-        sim=simulate(origins,seedgroups,ys,fork_sorted,fork_counts,fork_weights,anchor,chron_sorted,fork_scores,calm_scores,chron_scores,gates[gate_name],kind,gamma,cfg)
+        sim=simulate(origins,seedgroups,ys,fork_sorted,fork_counts,fork_weights,anchor,chron_sorted,qs,fork_scores,calm_scores,chron_scores,scaled_scores,gates[gate_name],kind,gamma,cfg)
         sim['gate']=gates[gate_name]; sim['method']=name; result_by_method[name]=sim
         for i in range(ncal,len(ys)):
-            alpha_rows.append({'method':name,'origin':int(origins[i]),'flag_group':'forked' if sim['group'][i] else ('all' if gate_name=='no-gate' else 'calm'),**{f'alpha_{k}':float(sim['alpha'][i,k]) for k in range(4)}})
+            alpha_rows.append({'method':name,'origin':int(origins[i]),'flag_group':'forked' if sim['group'][i] else ('all' if gate_name=='no-gate' else 'calm'),**{f'alpha_{k}':float(sim['alpha'][i,k]) for k in range(STREAMS)}})
     # Labels are used only in this final, post-prediction scoring section.
     test_labels=labels[ncal:]; methods=[]; headline=[]; path_rows=[]; point_rows=[]
     for name,sim in result_by_method.items():
@@ -218,13 +223,13 @@ def main():
             g=int(sim['group'][i]); grp='all' if 'no gate' in name.lower() else ('forked-flagged' if g else 'calm-flagged')
             for j,h in enumerate(HORIZONS):
                 lab=label_target_period(ys[i,:h+1],p1['free_flow_mph'],p1['congested_mph'])
-                methods.append({'method':name,'flag_group':grp,'regime':lab,'horizon_minutes':STEPS[j]*5,'actual':ys[i,h],'lower':sim['lower'][i,j],'upper':sim['upper'][i,j],'interval_score':interval_score(ys[i,h],sim['lower'][i,j],sim['upper'][i,j],.1),'origin':origins[i]})
-            path_rows.append({'method':name,'flag_group':grp,'path_covered':sim['path_covered'][i],'regime_60m':test_labels[i-ncal],'origin':origins[i]})
+                methods.append({'method':name,'flag_group':grp,'regime':lab,'horizon_minutes':STEPS[j]*5,'actual':ys[i,h],'lower':sim['lower'][i,h],'upper':sim['upper'][i,h],'interval_score':interval_score(ys[i,h],sim['lower'][i,h],sim['upper'][i,h],.1),'origin':origins[i]})
+            path_rows.append({'method':name,'flag_group':grp,'path_region_covered':sim['path_covered'][i],'joint_12_covered':sim['joint_covered'][i],'regime_60m':test_labels[i-ncal],'origin':origins[i]})
     raw_test=pd.DataFrame(methods)
     metrics=raw_test.groupby(['method','flag_group','regime','horizon_minutes']).apply(lambda x:pd.Series({'n':len(x),'coverage':np.mean((x.actual>=x.lower)&(x.actual<=x.upper)),'mean_width_mph':np.mean(x.upper-x.lower),'interval_score':x.interval_score.mean()}),include_groups=False).reset_index()
     metrics.to_csv(out/'results.csv',index=False,float_format='%.6f'); write_md(metrics,out/'results.md')
     pathdf=pd.DataFrame(path_rows)
-    pathsum=pathdf.groupby(['method','flag_group']).path_covered.agg(path_n='count',whole_path_coverage='mean').reset_index()
+    pathsum=pathdf.groupby(['method','flag_group']).agg(path_n=('path_region_covered','count'),whole_path_region_coverage=('path_region_covered','mean'),joint_12_interval_coverage=('joint_12_covered','mean')).reset_index()
     pathsum.to_csv(out/'whole_path_coverage.csv',index=False,float_format='%.6f')
     # Compact 60-minute table combines flagged-group coverage, true-regime coverage, widths and path coverage.
     headrows=[]
@@ -236,26 +241,32 @@ def main():
         pc=pathsum[pathsum.method==method]
         def pcover(g):
             row=pc[pc.flag_group==g]
-            return float(row.whole_path_coverage.iloc[0]) if len(row) else np.nan
+            return float(row.whole_path_region_coverage.iloc[0]) if len(row) else np.nan
+        def jcover(g):
+            row=pc[pc.flag_group==g]
+            return float(row.joint_12_interval_coverage.iloc[0]) if len(row) else np.nan
         calm=sub[sub.flag_group=='calm-flagged']; forked=sub[sub.flag_group=='forked-flagged']; allrows=sub
         tr=sub[sub.regime=='transition']; ff=sub[sub.regime=='free-flow']; co2=sub[sub.regime=='congested']
         headrows.append({'method':method,'n':len(sub),'calm_flag_coverage':cov(calm),'forked_flag_coverage':cov(forked),'all_group_coverage':cov(allrows),
           'free_flow_coverage':cov(ff),'free_flow_width_mph':width(ff),'free_flow_interval_score':score(ff),
           'transition_coverage':cov(tr),'transition_width_mph':width(tr),'transition_interval_score':score(tr),
           'congested_coverage':cov(co2),'congested_width_mph':width(co2),'congested_interval_score':score(co2),'mean_width_mph':width(allrows),
-          'calm_flag_path_coverage':pcover('calm-flagged'),
-          'forked_flag_path_coverage':pcover('forked-flagged'),'all_path_coverage':pcover('all')})
+          'calm_flag_path_region_coverage':pcover('calm-flagged'),'forked_flag_path_region_coverage':pcover('forked-flagged'),'all_path_region_coverage':pcover('all'),
+          'calm_flag_joint_12_coverage':jcover('calm-flagged'),'forked_flag_joint_12_coverage':jcover('forked-flagged'),'all_joint_12_coverage':jcover('all')})
     headline=pd.DataFrame(headrows); headline.to_csv(out/'headline_60m.csv',index=False,float_format='%.6f'); write_md(headline,out/'headline_60m.md')
     pd.DataFrame(alpha_rows).to_csv(out/'alpha_trace.csv',index=False)
     # Point forecast comparison for the main FORK gate, weighted empirical median versus Chronos q50.
     main=result_by_method['FORK ACI (p(fork))']; main_test=ncal
-    fork_point=[]; chron_point=[]
+    fork_point=[]; chron_point=[]; point_rows=[]
     for i in range(main_test,len(ys)):
         active=[j for j in range(2) if fork_counts[i,j]>0 and fork_weights[i,j]>=cfg['branch_drop_threshold']]
         if not active: active=[int(np.argmax(fork_weights[i]))]
         draw=np.concatenate([fork_paths[i,j,:fork_counts[i,j]] for j in active]); point=np.median(draw,axis=0)
         fork_point.extend(np.abs(point[[2,5,11]]-ys[i,[2,5,11]]).tolist())
         chron_point.extend(np.abs(qs[i,[2,5,11],2]-ys[i,[2,5,11]]).tolist())
+        for h in HORIZONS:
+            point_rows.append({'origin':int(origins[i]),'horizon_minutes':(h+1)*5,'fork_mae':float(abs(point[h]-ys[i,h])),'chronos_q50_mae':float(abs(qs[i,h,2]-ys[i,h]))})
+    pd.DataFrame(point_rows).to_csv(out/'point_predictions.csv',index=False,float_format='%.6f')
     mae=pd.DataFrame([{'method':'FORK weighted branch median','point_mae':float(np.mean(fork_point))},{'method':'Chronos q50','point_mae':float(np.mean(chron_point))}]); mae.to_csv(out/'point_mae.csv',index=False,float_format='%.6f')
     headline['fork_weighted_median_mae']=np.nan; headline['chronos_q50_mae']=np.nan
     headline.loc[headline.method=='FORK ACI (p(fork))','fork_weighted_median_mae']=float(np.mean(fork_point))
@@ -268,14 +279,14 @@ def main():
         if len(x)==0:return None
         return {'coverage':float(np.mean((x.actual>=x.lower)&(x.actual<=x.upper))),
                 'width':float(np.mean(x.upper-x.lower))}
-    fm=lookup('FORK ACI (p(fork))'); cm=lookup('Chronos ACI (no gate)'); cg=lookup('Chronos ACI (p(fork))')
+    fm=lookup('FORK ACI (p(fork))'); cm=lookup('Chronos scaled ACI (no gate)'); cg=lookup('Chronos scaled ACI (p(fork) gate)')
     verdict=[]
     if fm and cm and cg:
         f_cov=fm['coverage']; f_width=fm['width']; c_cov=[cm['coverage'],cg['coverage']]; c_width=[cm['width'],cg['width']]
         matched=[j for j,v in enumerate(c_cov) if abs(v-f_cov)<=cfg['matched_coverage_tolerance']]
         gain=max([(c_width[j]-f_width)/c_width[j] for j in matched],default=np.nan)
         verdict=[f"FORK transition coverage={f_cov:.1%}; target 85% {'reached' if f_cov>=.85 else 'not reached'}.",
-                 f"Matched-coverage baselines within ±{cfg['matched_coverage_tolerance']:.0%}: {', '.join(['Chronos ACI (no gate)' if j==0 else 'Chronos ACI (p(fork))' for j in matched]) or 'none'}.",
+                 f"Matched-coverage baselines within ±{cfg['matched_coverage_tolerance']:.0%}: {', '.join(['Chronos scaled ACI (no gate)' if j==0 else 'Chronos scaled ACI (p(fork) gate)' for j in matched]) or 'none'}.",
                  (f"FORK width reduction vs best matched baseline={gain:.1%} {'(≥10% sharper)' if gain>=.10 else '(below 10%)'}." if np.isfinite(gain) else "No matched-coverage verdict; a ≥10% width-reduction claim is unestablished.")]
     else: verdict=['D8(e) verdict unavailable: transition rows are missing.']
     (out/'D8e_verdict.md').write_text('\n'.join(verdict)+'\n',encoding='utf-8')
@@ -289,9 +300,16 @@ def main():
     main_trace=at[at.method=='FORK ACI (p(fork))']
     for g,group in enumerate(('calm','forked')):
         sub=main_trace[main_trace.flag_group==f'{g}-flagged'].sort_values('origin')
-        for j,label in enumerate(('15m','30m','60m','path')): axes[g,0].plot(np.arange(len(sub)),sub[f'alpha_{j}'],label=label)
+        for j,label in zip((2,5,11,12),('15m','30m','60m','path')): axes[g,0].plot(np.arange(len(sub)),sub[f'alpha_{j}'],label=label)
         axes[g,0].set_title(f'{g} gate state'); axes[g,0].set_ylabel('alpha_t'); axes[g,0].grid(alpha=.2)
     axes[0,0].legend(ncol=2,fontsize=8); axes[1,0].set_xlabel('Test windows in saved stream order'); axes[0,1].axis('off'); axes[1,1].axis('off'); fig.tight_layout(); fig.savefig(out/'alpha_over_time.png',dpi=160); plt.close(fig)
+    cum=raw_test[(raw_test.method=='FORK ACI (p(fork))')&(raw_test.horizon_minutes==60)]
+    fig,ax=plt.subplots(figsize=(8,5))
+    for group in ('calm-flagged','forked-flagged'):
+        z=cum[cum.flag_group==group].sort_values(['origin'])
+        hit=((z.actual>=z.lower)&(z.actual<=z.upper)).astype(float).to_numpy()
+        ax.plot(np.arange(1,len(hit)+1),np.cumsum(hit)/np.arange(1,len(hit)+1),label=group)
+    ax.axhline(.9,color='black',ls='--',lw=1); ax.set(xlabel='Test scored windows (origin order)',ylabel='Cumulative 60-minute coverage',title='Coverage convergence by p(fork) group'); ax.legend(); ax.grid(alpha=.2); fig.tight_layout(); fig.savefig(out/'cumulative_coverage.png',dpi=160); plt.close(fig)
     pd.DataFrame([{'method':k,'gamma':v} for k,v in choices.items()]).to_csv(out/'selected_gamma.csv',index=False)
     print(f'Phase 5 complete. Calibration branch cache: {cache_path}; selected gammas={choices}; outputs={out}',flush=True)
 

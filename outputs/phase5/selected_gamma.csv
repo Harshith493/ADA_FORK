@@ -4,7 +4,9 @@ FORK ACI (recent-drop),0.005
 FORK ACI (branch-weight),0.005
 FORK ACI (random),0.005
 FORK ACI (no gate),0.005
-"FORK ACI (p(fork), calm collapse)",0.005
-Chronos ACI (no gate),0.005
-Chronos ACI (p(fork)),0.005
+"FORK ACI (p(fork), calm collapse)",0.001
+"Chronos ACI (capped, not a valid baseline; no gate)",0.001
+"Chronos ACI (capped, not a valid baseline; p(fork))",0.001
+Chronos scaled ACI (no gate),0.001
+Chronos scaled ACI (p(fork) gate),0.001
 FORK ACI (oracle reference),0.01

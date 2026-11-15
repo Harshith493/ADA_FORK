@@ -29,3 +29,8 @@
 ## Phase 5
 
 - No external code or package is reused. The online ACI update, finite-sample score threshold, maturity queue, branch-union score, and evaluation loop are implemented in this project. Chronos forecast caches and the project's Phase 3/4 outputs are reused.
+
+## Phase 6
+
+- No external code or package was reused. The unbounded scaled Chronos score, matched-coverage interpolation, day-block bootstrap, and branch-weight reliability analysis are local implementations. Existing Phase 1/3/4/5 caches and Phase 5 replay functions are reused.
+- METR-LA raw data was not downloaded or redistributed. The network attempt failed at DNS resolution; a downloader script uses the same public Zenodo record as PEMS-BAY and checks the previously verified MD5.

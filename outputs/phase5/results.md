@@ -1,32 +1,59 @@
 | method | flag_group | regime | horizon_minutes | n | coverage | mean_width_mph | interval_score |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Chronos ACI (no gate) | all | congested | 15 | 429.0000 | 0.9114 | 12.6957 | 19.9370 |
-| Chronos ACI (no gate) | all | congested | 30 | 378.0000 | 0.9233 | 16.6493 | 21.8442 |
-| Chronos ACI (no gate) | all | congested | 60 | 301.0000 | 0.8970 | 22.8849 | 29.0149 |
-| Chronos ACI (no gate) | all | free-flow | 15 | 3626.0000 | 0.8420 | 4.8236 | 7.1078 |
-| Chronos ACI (no gate) | all | free-flow | 30 | 3547.0000 | 0.8300 | 6.1070 | 9.6420 |
-| Chronos ACI (no gate) | all | free-flow | 60 | 3417.0000 | 0.8156 | 8.3634 | 13.2079 |
-| Chronos ACI (no gate) | all | transition | 15 | 445.0000 | 0.6000 | 13.0216 | 91.4157 |
-| Chronos ACI (no gate) | all | transition | 30 | 575.0000 | 0.5270 | 15.4912 | 146.9235 |
-| Chronos ACI (no gate) | all | transition | 60 | 782.0000 | 0.4386 | 18.2611 | 220.4627 |
-| Chronos ACI (p(fork)) | calm-flagged | congested | 15 | 313.0000 | 0.9073 | 13.7537 | 22.0951 |
-| Chronos ACI (p(fork)) | calm-flagged | congested | 30 | 278.0000 | 0.9245 | 17.8036 | 23.9224 |
-| Chronos ACI (p(fork)) | calm-flagged | congested | 60 | 243.0000 | 0.9012 | 24.0415 | 29.8093 |
-| Chronos ACI (p(fork)) | calm-flagged | free-flow | 15 | 3107.0000 | 0.8577 | 5.0255 | 6.7103 |
-| Chronos ACI (p(fork)) | calm-flagged | free-flow | 30 | 3073.0000 | 0.8591 | 6.4015 | 8.6177 |
-| Chronos ACI (p(fork)) | calm-flagged | free-flow | 60 | 3016.0000 | 0.8432 | 8.8092 | 11.7766 |
-| Chronos ACI (p(fork)) | calm-flagged | transition | 15 | 240.0000 | 0.7333 | 14.6368 | 44.3833 |
-| Chronos ACI (p(fork)) | calm-flagged | transition | 30 | 309.0000 | 0.7379 | 17.6898 | 69.1108 |
-| Chronos ACI (p(fork)) | calm-flagged | transition | 60 | 401.0000 | 0.6783 | 21.7480 | 95.8432 |
-| Chronos ACI (p(fork)) | forked-flagged | congested | 15 | 116.0000 | 0.9224 | 9.8408 | 14.1140 |
-| Chronos ACI (p(fork)) | forked-flagged | congested | 30 | 100.0000 | 0.9100 | 12.8522 | 16.0792 |
-| Chronos ACI (p(fork)) | forked-flagged | congested | 60 | 58.0000 | 0.8793 | 18.0392 | 25.6866 |
-| Chronos ACI (p(fork)) | forked-flagged | free-flow | 15 | 519.0000 | 0.7476 | 3.6151 | 9.4873 |
-| Chronos ACI (p(fork)) | forked-flagged | free-flow | 30 | 474.0000 | 0.6414 | 4.1565 | 16.3162 |
-| Chronos ACI (p(fork)) | forked-flagged | free-flow | 60 | 401.0000 | 0.6085 | 5.0109 | 23.9729 |
-| Chronos ACI (p(fork)) | forked-flagged | transition | 15 | 205.0000 | 0.4439 | 11.1306 | 146.4779 |
-| Chronos ACI (p(fork)) | forked-flagged | transition | 30 | 266.0000 | 0.2820 | 12.8515 | 237.7565 |
-| Chronos ACI (p(fork)) | forked-flagged | transition | 60 | 381.0000 | 0.1864 | 14.5913 | 351.6238 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | congested | 15 | 429.0000 | 0.9114 | 12.6957 | 19.9370 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | congested | 30 | 378.0000 | 0.9233 | 16.6493 | 21.8442 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | congested | 60 | 301.0000 | 0.8970 | 22.8849 | 29.0149 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | free-flow | 15 | 3626.0000 | 0.8420 | 4.8236 | 7.1078 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | free-flow | 30 | 3547.0000 | 0.8300 | 6.1070 | 9.6420 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | free-flow | 60 | 3417.0000 | 0.8156 | 8.3634 | 13.2079 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | transition | 15 | 445.0000 | 0.6000 | 13.0216 | 91.4157 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | transition | 30 | 575.0000 | 0.5270 | 15.4912 | 146.9235 |
+| Chronos ACI (capped, not a valid baseline; no gate) | all | transition | 60 | 782.0000 | 0.4386 | 18.2611 | 220.4627 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | congested | 15 | 313.0000 | 0.9073 | 13.7537 | 22.0951 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | congested | 30 | 278.0000 | 0.9281 | 18.0151 | 23.9180 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | congested | 60 | 243.0000 | 0.9012 | 24.0415 | 29.8093 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | free-flow | 15 | 3107.0000 | 0.8577 | 5.0255 | 6.7103 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | free-flow | 30 | 3073.0000 | 0.8591 | 6.4078 | 8.6125 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | free-flow | 60 | 3016.0000 | 0.8432 | 8.8092 | 11.7766 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | transition | 15 | 240.0000 | 0.7333 | 14.6368 | 44.3833 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | transition | 30 | 309.0000 | 0.7379 | 17.7636 | 68.7307 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | calm-flagged | transition | 60 | 401.0000 | 0.6783 | 21.7480 | 95.8432 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | congested | 15 | 116.0000 | 0.9224 | 9.8408 | 14.1140 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | congested | 30 | 100.0000 | 0.9100 | 12.8522 | 16.0792 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | congested | 60 | 58.0000 | 0.8793 | 18.0392 | 25.6866 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | free-flow | 15 | 519.0000 | 0.7476 | 3.6151 | 9.4873 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | free-flow | 30 | 474.0000 | 0.6414 | 4.1565 | 16.3162 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | free-flow | 60 | 401.0000 | 0.6085 | 5.0109 | 23.9729 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | transition | 15 | 205.0000 | 0.4439 | 11.1306 | 146.4779 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | transition | 30 | 266.0000 | 0.2820 | 12.8515 | 237.7565 |
+| Chronos ACI (capped, not a valid baseline; p(fork)) | forked-flagged | transition | 60 | 381.0000 | 0.1864 | 14.5913 | 351.6238 |
+| Chronos scaled ACI (no gate) | all | congested | 15 | 429.0000 | 0.9417 | 16.8200 | 22.3966 |
+| Chronos scaled ACI (no gate) | all | congested | 30 | 378.0000 | 0.9709 | 24.2976 | 27.0176 |
+| Chronos scaled ACI (no gate) | all | congested | 60 | 301.0000 | 0.9767 | 45.8153 | 46.6356 |
+| Chronos scaled ACI (no gate) | all | free-flow | 15 | 3626.0000 | 0.9280 | 6.4642 | 7.6084 |
+| Chronos scaled ACI (no gate) | all | free-flow | 30 | 3547.0000 | 0.9315 | 9.0939 | 10.8830 |
+| Chronos scaled ACI (no gate) | all | free-flow | 60 | 3417.0000 | 0.9649 | 17.5771 | 18.7758 |
+| Chronos scaled ACI (no gate) | all | transition | 15 | 445.0000 | 0.6787 | 17.1441 | 86.5487 |
+| Chronos scaled ACI (no gate) | all | transition | 30 | 575.0000 | 0.6383 | 22.4584 | 137.9650 |
+| Chronos scaled ACI (no gate) | all | transition | 60 | 782.0000 | 0.5895 | 35.8987 | 197.8421 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | congested | 15 | 313.0000 | 0.9361 | 15.8929 | 24.1090 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | congested | 30 | 278.0000 | 0.9676 | 19.3804 | 24.5465 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | congested | 60 | 243.0000 | 0.9835 | 27.5506 | 28.1419 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | free-flow | 15 | 3107.0000 | 0.9118 | 5.9067 | 6.9216 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | free-flow | 30 | 3073.0000 | 0.9004 | 7.1326 | 8.7225 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | free-flow | 60 | 3016.0000 | 0.9178 | 10.4166 | 12.1669 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | transition | 15 | 240.0000 | 0.7750 | 17.0571 | 43.7447 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | transition | 30 | 309.0000 | 0.7735 | 19.2192 | 71.8805 |
+| Chronos scaled ACI (p(fork) gate) | calm-flagged | transition | 60 | 401.0000 | 0.7257 | 25.1573 | 98.8382 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | congested | 15 | 116.0000 | 1.0000 | 29.5248 | 29.5248 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | congested | 30 | 100.0000 | 1.0000 | 70.8141 | 70.8141 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | congested | 60 | 58.0000 | 1.0000 | 200.4618 | 200.4618 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | free-flow | 15 | 519.0000 | 0.9865 | 10.5020 | 11.2104 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | free-flow | 30 | 474.0000 | 0.9852 | 21.9883 | 22.3057 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | free-flow | 60 | 401.0000 | 1.0000 | 53.9490 | 53.9490 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | transition | 15 | 205.0000 | 0.7024 | 32.2852 | 121.0571 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | transition | 30 | 266.0000 | 0.6992 | 68.6702 | 164.8294 |
+| Chronos scaled ACI (p(fork) gate) | forked-flagged | transition | 60 | 381.0000 | 0.7612 | 160.2554 | 224.0559 |
 | FORK ACI (branch-weight) | calm-flagged | congested | 15 | 25.0000 | 1.0000 | 14.0439 | 14.0439 |
 | FORK ACI (branch-weight) | calm-flagged | congested | 30 | 23.0000 | 0.9130 | 19.7164 | 20.4019 |
 | FORK ACI (branch-weight) | calm-flagged | congested | 60 | 22.0000 | 1.0000 | 26.9125 | 26.9125 |
@@ -86,23 +113,23 @@
 | FORK ACI (p(fork)) | forked-flagged | transition | 30 | 266.0000 | 0.8534 | 34.0916 | 48.2710 |
 | FORK ACI (p(fork)) | forked-flagged | transition | 60 | 381.0000 | 0.8556 | 40.4867 | 54.1649 |
 | FORK ACI (p(fork), calm collapse) | calm-flagged | congested | 15 | 313.0000 | 0.9042 | 13.6969 | 22.1468 |
-| FORK ACI (p(fork), calm collapse) | calm-flagged | congested | 30 | 278.0000 | 0.9281 | 17.8773 | 23.7801 |
+| FORK ACI (p(fork), calm collapse) | calm-flagged | congested | 30 | 278.0000 | 0.9281 | 17.9257 | 23.8285 |
 | FORK ACI (p(fork), calm collapse) | calm-flagged | congested | 60 | 243.0000 | 0.9012 | 23.9016 | 29.6694 |
 | FORK ACI (p(fork), calm collapse) | calm-flagged | free-flow | 15 | 3107.0000 | 0.8523 | 4.9814 | 6.8053 |
-| FORK ACI (p(fork), calm collapse) | calm-flagged | free-flow | 30 | 3073.0000 | 0.8532 | 6.3262 | 8.7110 |
+| FORK ACI (p(fork), calm collapse) | calm-flagged | free-flow | 30 | 3073.0000 | 0.8532 | 6.3279 | 8.7109 |
 | FORK ACI (p(fork), calm collapse) | calm-flagged | free-flow | 60 | 3016.0000 | 0.8418 | 8.6723 | 11.7006 |
 | FORK ACI (p(fork), calm collapse) | calm-flagged | transition | 15 | 240.0000 | 0.7292 | 14.5909 | 44.5874 |
-| FORK ACI (p(fork), calm collapse) | calm-flagged | transition | 30 | 309.0000 | 0.7476 | 17.6881 | 67.5214 |
+| FORK ACI (p(fork), calm collapse) | calm-flagged | transition | 30 | 309.0000 | 0.7476 | 17.7028 | 67.4166 |
 | FORK ACI (p(fork), calm collapse) | calm-flagged | transition | 60 | 401.0000 | 0.6858 | 21.6534 | 95.4124 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | congested | 15 | 116.0000 | 0.9741 | 31.4091 | 32.6625 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | congested | 30 | 100.0000 | 0.9400 | 41.2538 | 42.3784 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | congested | 60 | 58.0000 | 1.0000 | 49.3150 | 49.3150 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | free-flow | 15 | 519.0000 | 0.9094 | 12.9146 | 13.6231 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | free-flow | 30 | 474.0000 | 0.9008 | 15.0366 | 16.5871 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | free-flow | 60 | 401.0000 | 0.9152 | 18.0468 | 21.7128 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | transition | 15 | 205.0000 | 0.8585 | 28.8500 | 41.1240 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | transition | 30 | 266.0000 | 0.8571 | 34.5609 | 47.8760 |
-| FORK ACI (p(fork), calm collapse) | forked-flagged | transition | 60 | 381.0000 | 0.8688 | 40.5247 | 54.0736 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | congested | 15 | 116.0000 | 0.9741 | 31.5509 | 32.8043 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | congested | 30 | 100.0000 | 0.9400 | 41.3411 | 42.4495 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | congested | 60 | 58.0000 | 1.0000 | 49.3495 | 49.3495 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | free-flow | 15 | 519.0000 | 0.9268 | 12.9995 | 13.5529 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | free-flow | 30 | 474.0000 | 0.8966 | 15.1580 | 16.6875 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | free-flow | 60 | 401.0000 | 0.9152 | 18.0372 | 21.6897 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | transition | 15 | 205.0000 | 0.8537 | 28.6610 | 41.1135 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | transition | 30 | 266.0000 | 0.8609 | 34.5497 | 48.0425 |
+| FORK ACI (p(fork), calm collapse) | forked-flagged | transition | 60 | 381.0000 | 0.8661 | 40.5979 | 54.0954 |
 | FORK ACI (random) | calm-flagged | congested | 15 | 369.0000 | 0.9458 | 22.0104 | 29.7179 |
 | FORK ACI (random) | calm-flagged | congested | 30 | 321.0000 | 0.8879 | 27.8258 | 35.0382 |
 | FORK ACI (random) | calm-flagged | congested | 60 | 255.0000 | 0.9176 | 36.2491 | 40.6433 |

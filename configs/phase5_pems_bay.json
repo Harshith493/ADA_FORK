@@ -5,7 +5,7 @@
   "output_dir": "outputs/phase5",
   "branch_cache": "data/cache/phase5_branch_outputs.npz",
   "seed": 5505,
-  "gamma_grid": [0.005, 0.01, 0.02, 0.05],
+  "gamma_grid": [0.001, 0.005, 0.01, 0.02, 0.05, 0.1],
   "target_alpha": 0.1,
   "alpha_clip": [0.01, 0.99],
   "score_cap": 1.0,
