@@ -116,6 +116,16 @@ The Phase 0 example plot's one sensor, date, and index were chosen only to exerc
 - G results distinguish measured MVP from NOT DONE extensions. The source summary does not include the full original “Expected Learnings” matrix, so only explicit target rows are filled; no missing target is fabricated. See `outputs/phase6/learnings_table.md`.
 - No external code or packages were reused. Phase 6 labels are loaded only after forecasting, branch scoring, gate tuning, and interval formation, for test stratification; the Phase 6 scoring utilities import no label module.
 
+### Phase 7 user decisions and autonomous choices
+
+- A1: before width, interval score, and coverage, clip each Phase 6 FORK/Chronos interval endpoint to that sensor's training-block minimum and maximum. Use the same sensor-specific physical bounds for calibration tuning objectives and test metrics; never use calibration/test extrema.
+- A2: label every reported point-MAE statistic with its population. Phase 5's original point MAE averages all test windows over 15/30/60m; the Phase 6 60m bootstrap MAE uses all test windows at 60m, not transition-only windows.
+- A3: FORK whole-path region coverage is about 66% because bounds stop at empirical branch support, so the whole-path guarantee is not met; per-step group coverage is near nominal (~88–89%).
+- Demo presets (jam onset, free-flow, false alarm) select a display window by scoring labels only; the UI states this visibly. The forecasting/gate code never reads those labels. Index selection remains available.
+- The demo loads a compressed local cache assembled from Phase 1/3/4 outputs; no model inference, download, or package installation occurs in Streamlit. Display Chronos native P10–P90 separately from the FORK branch samples and reveal actual future only on explicit checkbox.
+- For branch visualization, show each branch's empirical median and P10–P90 sample envelope with color and weight; these are display summaries of the cached paths, not newly calibrated intervals.
+- The report preserves “not computed” for Phase 0–5 CIs and identifies the Phase 6 1,000-day-block bootstrap CIs as specific to the sampled evaluation.
+
 ### Phase 4 user-directed pivot and implementation choices
 
 - The Phase 3 kill signal remains active: p(fork) did not outperform volatility or recent-drop in AUPRC. Proceed with Phase 4, report that result, and treat p(fork) only as a risk score. Phase 4 does not use p(fork); Phase 5 will compare gates.

@@ -14,6 +14,6 @@ for method,g in df.groupby('method'):
  specs={'transition_coverage':(transition,g.covered.to_numpy()),'calm_group_coverage':(calm,g.covered.to_numpy()),'forked_group_coverage':(fork,g.covered.to_numpy()),'transition_width':(transition,g.width.to_numpy()),'transition_interval_score':(transition,g.interval_score.to_numpy()),'weighted_median_point_mae':(np.ones(len(g),bool),point),'chronos_q50_point_mae':(np.isfinite(chron),chron)}
  ci=day_block_bootstrap_ci(ids,specs,len(days),1000,6060)
  for name,(lo,hi) in ci.items():
-  mask,val=specs[name]; rows.append({'method':method,'metric':name,'estimate':float(np.mean(val[mask])),'ci95_low':lo,'ci95_high':hi})
+  mask,val=specs[name]; subset='all test windows at 60m' if 'point_mae' in name else 'transition windows' if name.startswith('transition_') else 'gate-flagged group'; rows.append({'method':method,'metric':name,'subset':subset,'estimate':float(np.mean(val[mask])),'ci95_low':lo,'ci95_high':hi})
 pd.DataFrame(rows).to_csv(ROOT/'outputs/phase6/day_block_bootstrap_ci.csv',index=False,float_format='%.6f')
 print('Wrote deterministic 1000-resample day-block CIs.')

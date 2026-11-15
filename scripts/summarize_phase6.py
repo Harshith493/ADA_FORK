@@ -7,7 +7,7 @@ sys.path.insert(0,str(ROOT/'src'))
 from fork.phase6 import interpolate_at
 df=pd.read_csv(out/'coverage_width_curve.csv'); rows=[]
 for h in (15,30,60):
- g=df[(df.horizon==h)&(df.subset=='calm')]
+ g=df[(df.horizon==h)&(df.subset=='non-transition')]
  for target in (.90,):
   vals={m:(interpolate_at(x.coverage,x.width,target),interpolate_at(x.coverage,x.interval_score,target)) for m,x in g.groupby('method')}
   f=vals.get('FORK ACI (p(fork))',(None,None)); c=vals.get('Chronos scaled ACI (p(fork) gate)',(None,None))

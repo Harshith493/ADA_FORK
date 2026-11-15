@@ -2,7 +2,7 @@ import ast, sys, unittest
 from pathlib import Path
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT/'src'))
-from fork.phase6 import day_block_bootstrap_ci, interpolate_at, minority_reliability
+from fork.phase6 import day_block_bootstrap_ci, interpolate_at, minority_reliability, clip_interval
 
 class Phase6Tests(unittest.TestCase):
  def test_bootstrap_is_deterministic(self):
@@ -10,6 +10,9 @@ class Phase6Tests(unittest.TestCase):
   a=day_block_bootstrap_ci(ids,spec,3,100,123); b=day_block_bootstrap_ci(ids,spec,3,100,123); self.assertEqual(a,b)
  def test_interpolation_refuses_extrapolation(self):
   self.assertIsNone(interpolate_at([.6,.7],[1,2],.8)); self.assertAlmostEqual(interpolate_at([.6,.8],[1,3],.7),2.)
+ def test_physical_interval_clipping(self):
+  lo,hi=clip_interval(np.array([-5.,20.]),np.array([120.,130.]),0.,100.)
+  np.testing.assert_array_equal(lo,[0.,20.]); np.testing.assert_array_equal(hi,[100.,100.])
  def test_minority_reliability_drops_collapsed(self):
   paths=np.array([[[[0.],[0.]],[[3.],[3.]]],[[[0.],[0.]],[[0.],[0.]]]])
   rows,brier,pred,hit=minority_reliability(np.array([[.7,.3],[1.,0.]]),np.array([[2,2],[2,0]]),paths,np.array([[3.],[0.]]),5)

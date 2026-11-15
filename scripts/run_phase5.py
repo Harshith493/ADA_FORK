@@ -267,10 +267,11 @@ def main():
         for h in HORIZONS:
             point_rows.append({'origin':int(origins[i]),'horizon_minutes':(h+1)*5,'fork_mae':float(abs(point[h]-ys[i,h])),'chronos_q50_mae':float(abs(qs[i,h,2]-ys[i,h]))})
     pd.DataFrame(point_rows).to_csv(out/'point_predictions.csv',index=False,float_format='%.6f')
-    mae=pd.DataFrame([{'method':'FORK weighted branch median','point_mae':float(np.mean(fork_point))},{'method':'Chronos q50','point_mae':float(np.mean(chron_point))}]); mae.to_csv(out/'point_mae.csv',index=False,float_format='%.6f')
+    mae=pd.DataFrame([{'method':'FORK weighted branch median','point_mae':float(np.mean(fork_point)),'subset':'all test windows at 15/30/60m'},{'method':'Chronos q50','point_mae':float(np.mean(chron_point)),'subset':'all test windows at 15/30/60m'}]); mae.to_csv(out/'point_mae.csv',index=False,float_format='%.6f')
     headline['fork_weighted_median_mae']=np.nan; headline['chronos_q50_mae']=np.nan
     headline.loc[headline.method=='FORK ACI (p(fork))','fork_weighted_median_mae']=float(np.mean(fork_point))
     headline.loc[headline.method=='FORK ACI (p(fork))','chronos_q50_mae']=float(np.mean(chron_point))
+    headline['point_mae_subset']='all test windows at 15/30/60m'
     headline.to_csv(out/'headline_60m.csv',index=False,float_format='%.6f'); write_md(headline,out/'headline_60m.md')
     # Coverage-width comparison: test-only descriptive check, never used for parameter selection.
     head=raw_test[(raw_test.horizon_minutes==60)&(raw_test.regime=='transition')]

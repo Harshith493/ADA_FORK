@@ -13,7 +13,7 @@ All methods share Phase 1 cached test forecasts, sensors and chronological test 
 
 ## Headline at 60 minutes
 
-| Method | Transition coverage (n) | Calm coverage (n) | Mean width | Interval score | Point MAE |
+| Method | Transition coverage (n) | Calm coverage (n) | Mean width | Interval score | Point MAE (all test windows, 60m) |
 |---|---:|---:|---:|---:|---:|
 | ACI approximate nominal 90% | 0.504 (782) | 0.883 (3718) | 13.84 | 48.20 | 4.45 |
 | ACI approximate nominal 90% (updates every valid step) | 0.582 (782) | 0.917 (3718) | 18.39 | 48.65 | 4.45 |

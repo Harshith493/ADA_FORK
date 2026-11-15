@@ -2,6 +2,15 @@
 from __future__ import annotations
 import numpy as np
 
+def clip_interval(lower, upper, train_min, train_max):
+    """Clip both interval endpoints to the sensor's training-observed range."""
+    if not train_min < train_max:
+        raise ValueError('training speed limits must be increasing')
+    lo=np.clip(np.asarray(lower,dtype=float),train_min,train_max)
+    hi=np.clip(np.asarray(upper,dtype=float),train_min,train_max)
+    if np.any(lo>hi): raise ValueError('clipped lower bound exceeds upper bound')
+    return lo,hi
+
 def day_block_bootstrap_ci(day_ids, metric_specs, day_count, resamples=1000, seed=6060):
     """Percentile intervals from resampling whole day blocks with replacement.
 
