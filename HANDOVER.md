@@ -12,9 +12,9 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 ## Current status
 
-- Phase: 5 - online conformal loop.
-- Step: Phase 5 conformal loop, full calibration/test evaluation, plots, report, tests, and commits complete.
-- Status: done; awaiting user's review. Do not start Phase 6.
+- Phase: 6 - full evaluation.
+- Step: Phase 6 audit, matched-coverage sweep, branch-weight reliability, bootstrap CIs, learning table, and tests complete; METR-LA and scale-up are explicitly skipped.
+- Status: done; awaiting user's review. Do not start Phase 7 until approved.
 
 ## Completed (commit references)
 
@@ -33,17 +33,18 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 5 conformal implementation, full measured outputs, tests, and research notes: `4948e96`.
 - Phase 5 headline table extended with regime-specific widths/scores: `64c33d8`.
 - Phase 5 implementation, configuration, tests, outputs, and research notes: see separate implementation commit after the run.
+- Phase 5 audit corrections and Phase 6 code, tests, results, and research notes: `9e01e47`.
 
 ## Exactly what to do next
 
-1. Review `outputs/phase5/headline_60m.md`, `results.md`, `whole_path_coverage.csv`, `D8e_verdict.md`, `coverage_vs_width.png`, and `alpha_over_time.png`.
-2. Note the 90% whole-path target was missed: about 66% in both p(fork)-flagged groups. Review the interval group coverage and the active Phase 3 kill signal in `DECISIONS.md`.
-3. Approve Phase 5 or send corrections. Do not start Phase 6 until approved.
+1. Review `outputs/phase6/headline_60m_ci.md`, `matched_coverage.csv`, `matched_calm_coverage.csv`, `branch_reliability.csv`, `day_block_bootstrap_ci.csv`, and `learnings_table.md`.
+2. Review the active detector kill signal and Phase 5 path-support limitation in `DECISIONS.md` and `outputs/phase6/A2_path_audit.md`.
+3. If desired, manually download METR-LA (steps below) and re-run a transfer only after the PEMS-shaped cache/loader refactor. Wait for approval before Phase 7.
 
 ## Decisions
 
 - User decisions: Phase 0 approved; Phase 1 choices 1A, 2A, 3A, 4B, 5A; Phase 2 D1-D7 recorded in [`DECISIONS.md`](DECISIONS.md).
-- Phases 2-4 are approved; Phase 5 is implemented and evaluated. User review is pending. User decisions and autonomous choices are in [`DECISIONS.md`](DECISIONS.md).
+- Phases 2-5 are approved. Phase 6 implementation/evaluation is complete with scale-up and METR-LA transfer skipped. User decisions and autonomous choices are in [`DECISIONS.md`](DECISIONS.md).
 
 ## Environment and commands
 
@@ -67,6 +68,10 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Phase 2 all-step ACI rerun: `python scripts\run_phase2.py`. Pilot 30 Chronos batches/2.9s, projection 41.4 minutes; completed and cached selected-origin bounds at `data/cache/phase2_consecutive_aci_sampled_bounds.npz`. No extra packages were installed. No `requirements.txt` is present in this repository.
 - Phase 3 command: `python scripts\run_phase3.py`; use the environment already used for Phase 1/2 and the cached Chronos weights. Add no packages; implement small regression and k-means with NumPy.
 - Phase 3 run completed under the two-hour limit. Pilot: 20 matching/k-means queries in 0.08s; projected features 0.9 minutes, 5,000 forecasts estimated 0.3 minutes from measured Phase 2 throughput; combined projection 1.2 minutes. Forecast, feature, and p(fork)/minority caches are local and ignored.
+- Phase 6 A-D command: `python scripts\run_phase6.py`; fixed configuration `configs/phase6.json`; outputs under `outputs/phase6/`. It reuses cached forecasts and branches; no Chronos inference is run.
+- Phase 6 full test command: `python -m unittest discover -s tests -v` (41 passed). Output summaries: `python scripts\write_phase6_headline.py`, `python scripts\run_phase6_bootstrap.py`, `python scripts\summarize_phase6.py`, `python scripts\summarize_phase6_reliability.py`.
+- Phase 6 scale estimate: `python scripts\run_phase6_scaled.py --estimate-only`; estimated 69.5 minutes before new caches, so it was not run. This script is only an estimate/guard, not an all-origin cache builder. Full scaling needs cache generation before the evaluator can consume all origins.
+- METR-LA: `python scripts\download_metr_la.py` attempted Zenodo but failed DNS. Manual: download `METR-LA.csv` from https://zenodo.org/records/5146275 to `data/raw/METR-LA.csv`; verify `(Get-FileHash -Algorithm MD5 .\data\raw\METR-LA.csv).Hash.ToLower()` equals `d3adaa79856bf610f25558fc242c7190`. Transfer pipeline remains unavailable because caches/loaders are PEMS-shaped.
 
 ## File map
 
@@ -99,6 +104,11 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - `src/fork/phase5.py` - group-specific conformal score, finite-sample level, ACI state, and outcome maturity queue.
 - `tests/test_phase5.py` - score cap, state independence, maturity, random-gate coverage, and label-free core checks.
 - `outputs/phase5/` - test metrics, gamma sweep, group/path coverage, alpha trace, D8 verdict, and figures.
+- `configs/phase6.json`, `scripts/run_phase6.py` - A-D matched alpha sweep, reliability, and bootstrap analysis using frozen caches.
+- `src/fork/phase6.py`, `tests/test_phase6.py` - deterministic date-block bootstrap, interpolation, branch reliability and label-free helper tests.
+- `outputs/phase6/` - corrected path audit, matched curves/tables, bootstrap CIs, branch calibration, learning table, and plots.
+- `scripts/run_phase6_scaled.py`, `configs/phase6_scaled.json` - scale-up runtime estimate; all-origin cache generation is not implemented here.
+- `scripts/download_metr_la.py` - public Zenodo downloader with MD5 verification; network attempt failed in this environment.
 - `data/cache/phase5_branch_outputs.npz` - ignored calibration branches and weights for the Phase 5 replay; Phase 4 supplies the test branch cache.
 - `outputs/phase4/` - Phase 4 test metrics, comparison, and example plot.
 - `data/cache/phase4_branch_cache.npz` - ignored per-window branch paths/weights, generated by the Phase 4 run.
@@ -124,6 +134,7 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 
 - PEMS-BAY: present at `data/raw/PEMS-BAY.csv` (85,718,439 bytes, Zenodo record 5146275); Phase 1 used 2017-01-01 through 2017-05-31 inclusive.
 - METR-LA: not downloaded by user request; public at the same Zenodo record, defer until needed.
+- METR-LA download was attempted in Phase 6 but DNS resolution failed. Manual action if transfer is desired: open https://zenodo.org/records/5146275, download `METR-LA.csv`, place it at `data/raw/METR-LA.csv`, then verify `(Get-FileHash -Algorithm MD5 .\data\raw\METR-LA.csv).Hash.ToLower()` equals `d3adaa79856bf610f25558fc242c7190`. Transfer remains skipped because data/cache shapes are PEMS-specific.
 - Synthetic two-regime generator: implemented and scored in Phase 3 (not a separate data file).
 - Phase 3 synthetic two-regime/fork generator is implemented in `src/fork/phase3.py` and evaluated in `outputs/phase3/synthetic_metrics.csv`; standalone reusable data cache is not needed.
 - No manual account/token is needed for the above public files. Caltrans PeMS 2026 requires the user's manual account/download step and remains stretch-only.
@@ -150,6 +161,8 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - First Phase 2 forecast attempt failed because the runner did not set the project-local Hugging Face cache before loading; fixed by setting `HF_HOME` and offline mode before imports. Keep using the project cache; do not redirect to the nearly full C: cache.
 - Phase 2 approximate-90 ACI gamma 0.001 is the minimum of its calibration grid; the all-valid-step version uses that same selected gamma and has wider bounds. Do not describe it as independently gamma-tuned.
 - Phase 3 p(fork) test AUPRC (0.430) is below volatility (0.445), activating the kill/pivot signal. It also overpredicts synthetic odds (mean 0.609 vs 0.442; odds-bin MAE 0.310). The target is model miss, so do not claim calibrated latent fork probability.
+- Phase 6 scale-up is estimate-only: current sample workload projects 69.5 minutes for 43,440 all-origin windows at 30-minute stride, before creating forecast/branch caches. The `run_phase6_scaled.py` script is only a runtime preflight, not a complete cache-generation runner. Do not describe the scale-up as implemented or measured.
+- Phase 6 METR-LA download failed at DNS resolution (`getaddrinfo failed`); do not retry network download in this restricted runtime. If downloaded manually, transfer requires refactoring the PEMS-shaped cache/loaders and frozen Phase 3/4/5 pipeline.
 
 ## Latest results
 
@@ -158,6 +171,16 @@ Project brief: [`docs/onepager_summary.md`](docs/onepager_summary.md).
 - Random gate group interval coverage: 89.4% / 88.7%, but whole-path coverage 66.6% / 64.7%. FORK weighted-median MAE 3.000 mph vs Chronos q50 3.098 mph.
 - D8(e): transition coverage misses 85%; no Chronos ACI baseline is within ±2 points of FORK transition coverage, so no matched-coverage sharpness claim. Phase 3 kill signal remains active (p(fork) AUPRC .4299 < volatility .4450 and recent-drop .4527).
 - Full Phase 5 outputs: `outputs/phase5/headline_60m.md`, `results.md`, `whole_path_coverage.csv`, `selected_gamma.csv`, `D8e_verdict.md`, and plots. The 35-test unit suite passed; full run used cached Chronos forecasts and generated calibration branch paths in about 0.3 minutes.
+
+## Phase 6 latest result and commands
+
+- Phase 6 status: A-D measured on 4,500 fixed sampled test windows; no Chronos inference recomputed. Corrected 60m table: FORK transition coverage 82.2% [79.0,86.3], group coverage 88.4% [85.6,91.0] calm / 89.3% [86.2,92.8] forked, transition width 34.33 [30.78,36.77] mph, interval score 58.10 [49.39,67.41], MAE 3.89 [2.83,5.09]. Scaled Chronos gated: 74.3% [67.0,82.9] transition, 90.1% [87.1,93.2] calm / 89.2% [82.2,96.7] forked, width 90.98 [75.34,109.47], interval score 159.85 [128.32,187.83], q50 MAE 4.45 [3.10,5.88]. CI method: 1000 day-block bootstrap resamples, seed 6060.
+- 60m matched transition at 70%: FORK width 27.54 vs Chronos 74.64 mph (63.1% lower); 80% has no range overlap (Chronos max 78.4%). At matched calm 90%, FORK 60m width is 12.87 vs 16.14 mph; 15m is wider and 30m nearly equal.
+- Minority Brier 0.2141; for predicted weights in [.25,.35], observed nearest-minority rate 33.1% (n=1,157). Five fixed-width bins; first bin empty due branch threshold.
+- A2: max-score path-region vs joint-12 distinction; FORK's region coverage 66% because capped branch nonconformity cannot extend beyond empirical branch support. Scaled Chronos path region reaches ~89.5% by gate; joint-12 remains 63.1% calm / 75.7% fork.
+- Tests: `python -m unittest discover -s tests -v` (41 passed, 7.8 sec). Main experiment: `python scripts/run_phase6.py` (~7.2 minutes). Postprocess/manual commands: `python scripts/run_phase6_bootstrap.py`, `python scripts/write_phase6_headline.py`, `python scripts/summarize_phase6.py`, `python scripts/summarize_phase6_reliability.py`.
+- Scale-up command: `python scripts/run_phase6_scaled.py --estimate-only` (69.5 min estimate; not run). METR-LA downloader: `python scripts/download_metr_la.py` (failed due DNS; manual steps above).
+- Full tables: `outputs/phase6/headline_60m_ci.md`, `day_block_bootstrap_ci.csv`, `matched_coverage.csv`, `matched_calm_coverage.csv`, `branch_reliability.csv`, `learnings_table.md`. The p(fork) AUPRC kill signal stays active; 85% transition and 90% FORK path-region targets were missed.
 
 - One CPU inference completed for Chronos-Bolt Small (`amazon/chronos-bolt-small`), PEMS-BAY sensor 400001, 14h context and 1h horizon, using a point at the 70% file index. First median forecast: 67.66 mph; observed first step: 68.10 mph. Sanity check only; not a measured benchmark metric.
 - Measured timing across 10 repeats: median 0.3125 process CPU seconds and 0.0857 wall seconds per forecast after warm-up.
